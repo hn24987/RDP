@@ -13,13 +13,11 @@ jobs:
       run: |
         Get-ChildItem -Path "C:\hostedtoolcache" -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
 
-    # 2. Bật Remote Desktop & Tối ưu Performance
+    # 2. Bật Remote Desktop
     - name: Configure Windows & RDP
       run: |
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-        # Bật Power Plan High Performance
-        powercfg /s 8c5e7fda-e8bf-4a96-9a0f-e4580b5b043e
 
     # 3. Đặt mật khẩu Admin
     - name: Set RDP Password

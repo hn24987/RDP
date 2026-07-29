@@ -1,0 +1,39 @@
+name: Max Performance RDP (Tailscale)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    # 1. Dọn dẹp dung lượng ổ đĩa thừa trên Runner
+    - name: Free Disk Space
+      run: |
+        Get-ChildItem -Path "C:\hostedtoolcache" -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
+
+    # 2. Bật Remote Desktop & Tối ưu Performance
+    - name: Configure Windows & RDP
+      run: |
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+        # Bật Power Plan High Performance
+        powercfg /s 8c5e7fda-e8bf-4a96-9a0f-e4580b5b043e
+
+    # 3. Đặt mật khẩu Admin
+    - name: Set RDP Password
+      run: |
+        net user runneradmin "Password123456!"
+
+    # 4. Cài đặt và kết nối Tailscale
+    - name: Install & Connect Tailscale
+      run: |
+        Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe" -OutFile "tailscale-setup.exe"
+        Start-Process -FilePath ".\tailscale-setup.exe" -ArgumentList "/quiet" -Wait
+        & "C:\Program Files\Tailscale\tailscale.exe" up --authkey=${{ secrets.TAILSCALE_AUTHKEY }} --hostname="github-max-pc"
+
+    # 5. Giữ máy hoạt động (~6 tiếng)
+    - name: Keep Alive
+      run: |
+        Start-Sleep -Seconds 21600

@@ -1,37 +1,75 @@
-name: Max Performance RDP (Tailscale)
+name: RDP
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  secure-rdp:
     runs-on: windows-latest
+    timeout-minutes: 3600
 
     steps:
-    # 1. Dọn dẹp dung lượng ổ đĩa thừa trên Runner
-    - name: Free Disk Space
-      run: |
-        Get-ChildItem -Path "C:\hostedtoolcache" -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
+      - name: Expand Virtual Memory (Pagefile)
+        run: |
+          # Cho phép tự chỉnh dung lượng Pagefile và đặt cố định 16GB - 32GB
+          wmic computersystem where name="%computername%" set AutomaticManagedPagefile=False
+          wmic pagefilesetting create name="C:\\pagefile.sys"
+          wmic pagefilesetting where name="C:\\pagefile.sys" set InitialSize=16384,MaximumSize=32768
 
-    # 2. Bật Remote Desktop
-    - name: Configure Windows & RDP
-      run: |
-        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
-        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+      - name: Configure Core RDP Settings
+        run: |
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0 -Force
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 0 -Force
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "SecurityLayer" -Value 0 -Force
 
-    # 3. Đặt mật khẩu Admin
-    - name: Set RDP Password
-      run: |
-        net user runneradmin "Password123456!"
+          netsh advfirewall firewall delete rule name="RDP-Tailscale"
+          netsh advfirewall firewall add rule name="RDP-Tailscale" dir=in action=allow protocol=TCP localport=3389
+          Restart-Service -Name TermService -Force
 
-    # 4. Cài đặt và kết nối Tailscale
-    - name: Install & Connect Tailscale
-      run: |
-        Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe" -OutFile "tailscale-setup.exe"
-        Start-Process -FilePath ".\tailscale-setup.exe" -ArgumentList "/quiet" -Wait
-        & "C:\Program Files\Tailscale\tailscale.exe" up --authkey=${{ secrets.TAILSCALE_AUTHKEY }} --hostname="github-max-pc"
+      - name: Create RDP User
+        run: |
+          $password = "Password123456!"
+          $securePass = ConvertTo-SecureString $password -AsPlainText -Force
+          New-LocalUser -Name "RDP" -Password $securePass -AccountNeverExpires
+          Add-LocalGroupMember -Group "Administrators" -Member "RDP"
+          Add-LocalGroupMember -Group "Remote Desktop Users" -Member "RDP"
 
-    # 5. Giữ máy hoạt động (~6 tiếng)
-    - name: Keep Alive
-      run: |
-        Start-Sleep -Seconds 21600
+      - name: Install Tailscale
+        run: |
+          $tsUrl = "https://pkgs.tailscale.com/stable/tailscale-setup-1.82.0-amd64.msi"
+          $installerPath = "$env:TEMP\tailscale.msi"
+          Invoke-WebRequest -Uri $tsUrl -OutFile $installerPath
+          Start-Process msiexec.exe -ArgumentList "/i", "`"$installerPath`"", "/quiet", "/norestart" -Wait
+          Remove-Item $installerPath -Force
+
+      - name: Establish Tailscale Connection
+        run: |
+          & "$env:ProgramFiles\Tailscale\tailscale.exe" up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=github-max-pc
+          
+          $tsIP = $null
+          $retries = 0
+          while (-not $tsIP -and $retries -lt 10) {
+              $tsIP = & "$env:ProgramFiles\Tailscale\tailscale.exe" ip -4
+              Start-Sleep -Seconds 5
+              $retries++
+          }
+          
+          if (-not $tsIP) {
+              Write-Error "Tailscale IP not assigned. Exiting."
+              exit 1
+          }
+          echo "TAILSCALE_IP=$tsIP" >> $env:GITHUB_ENV
+
+      - name: Maintain Connection
+        run: |
+          Write-Host "`n=========================================="
+          Write-Host "RDP CONNECT INFO:"
+          Write-Host "Address : $env:TAILSCALE_IP (hoặc gõ tên: github-max-pc)"
+          Write-Host "Username: RDP"
+          Write-Host "Password: hn210913"
+          Write-Host "==========================================`n"
+          
+          while ($true) {
+              Write-Host "[$(Get-Date)] RDP Active..."
+              Start-Sleep -Seconds 300
+          }

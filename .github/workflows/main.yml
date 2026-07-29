@@ -11,10 +11,22 @@ jobs:
     steps:
       - name: Expand Virtual Memory (Pagefile)
         run: |
-          # Cho phép tự chỉnh dung lượng Pagefile và đặt cố định 16GB - 32GB
-          wmic computersystem where name="%computername%" set AutomaticManagedPagefile=False
-          wmic pagefilesetting create name="C:\\pagefile.sys"
-          wmic pagefilesetting where name="C:\\pagefile.sys" set InitialSize=16384,MaximumSize=32768
+          try {
+              # Tắt chế độ tự quản lý Pagefile
+              $sys = Get-CimInstance -ClassName Win32_ComputerSystem
+              Set-CimInstance -InputObject $sys -Property @{AutomaticManagedPagefile = $false}
+              
+              # Cấu hình Pagefile 16GB - 32GB trên ổ C
+              $pagefile = Get-CimInstance -ClassName Win32_PageFileSetting -ErrorAction SilentlyContinue
+              if ($pagefile) {
+                  Set-CimInstance -InputObject $pagefile -Property @{InitialSize = 16384; MaximumSize = 32768}
+              } else {
+                  New-CimInstance -ClassName Win32_PageFileSetting -Property @{Name = "C:\pagefile.sys"; InitialSize = 16384; MaximumSize = 32768}
+              }
+              Write-Host "Pagefile expanded successfully."
+          } catch {
+              Write-Host "Skipping pagefile modification: $_"
+          }
 
       - name: Configure Core RDP Settings
         run: |
@@ -66,7 +78,7 @@ jobs:
           Write-Host "RDP CONNECT INFO:"
           Write-Host "Address : $env:TAILSCALE_IP (hoặc gõ tên: github-max-pc)"
           Write-Host "Username: RDP"
-          Write-Host "Password: hn210913"
+          Write-Host "Password: Password123456!"
           Write-Host "==========================================`n"
           
           while ($true) {

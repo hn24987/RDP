@@ -12,11 +12,9 @@ jobs:
       - name: Expand Virtual Memory (Pagefile)
         run: |
           try {
-              # Tắt chế độ tự quản lý Pagefile
               $sys = Get-CimInstance -ClassName Win32_ComputerSystem
               Set-CimInstance -InputObject $sys -Property @{AutomaticManagedPagefile = $false}
               
-              # Cấu hình Pagefile 16GB - 32GB trên ổ C
               $pagefile = Get-CimInstance -ClassName Win32_PageFileSetting -ErrorAction SilentlyContinue
               if ($pagefile) {
                   Set-CimInstance -InputObject $pagefile -Property @{InitialSize = 16384; MaximumSize = 32768}

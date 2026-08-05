@@ -17,7 +17,7 @@ A simple GitHub Actions workflow to run a temporary Windows Remote Desktop (RDP)
 
 1. Ensure Tailscale is running on your device.
 2. Open Remote Desktop Client (RDP) and use:
-   - **Address:** `github-max-pc` (or the Tailscale IP from workflow logs)
+   - **Address:** `Your Tailscale IP from workflow logs`
    - **Username:** `RDP`
    - **Password:** `Password123456!`
 

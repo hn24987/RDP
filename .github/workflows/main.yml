@@ -74,12 +74,12 @@ jobs:
         run: |
           Write-Host "`n=========================================="
           Write-Host "RDP CONNECT INFO:"
-          Write-Host "Address : $env:TAILSCALE_IP (hoặc gõ tên: github-max-pc)"
+          Write-Host "Address : $env:TAILSCALE_IP"
           Write-Host "Username: RDP"
           Write-Host "Password: Password123456!"
           Write-Host "==========================================`n"
           
           while ($true) {
-              Write-Host "[$(Get-Date)] RDP Active..."
+              Write-Host "[$(Get-Date)] RDP Still Active..."
               Start-Sleep -Seconds 300
           }

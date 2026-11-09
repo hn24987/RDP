@@ -1,85 +1,139 @@
 name: RDP
+run-name: rdp-app-${{ inputs.request_id }}
 
 on:
   workflow_dispatch:
+    inputs:
+      request_id:
+        description: 'Session ID (app supplies this automatically)'
+        required: true
+        type: string
+      duration_minutes:
+        description: 'Session duration, 10–300 minutes'
+        default: '60'
+        required: true
+        type: string
+
+permissions:
+  contents: read
 
 jobs:
   secure-rdp:
     runs-on: windows-latest
-    timeout-minutes: 3600
-
+    timeout-minutes: 360
     steps:
-      - name: Expand Virtual Memory (Pagefile)
+      - name: Validate configuration
+        shell: pwsh
+        env:
+          TS_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
+          RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
+          REQUEST_ID: ${{ inputs.request_id }}
+          DURATION: ${{ inputs.duration_minutes }}
         run: |
-          try {
-              $sys = Get-CimInstance -ClassName Win32_ComputerSystem
-              Set-CimInstance -InputObject $sys -Property @{AutomaticManagedPagefile = $false}
-              
-              $pagefile = Get-CimInstance -ClassName Win32_PageFileSetting -ErrorAction SilentlyContinue
-              if ($pagefile) {
-                  Set-CimInstance -InputObject $pagefile -Property @{InitialSize = 16384; MaximumSize = 32768}
-              } else {
-                  New-CimInstance -ClassName Win32_PageFileSetting -Property @{Name = "C:\pagefile.sys"; InitialSize = 16384; MaximumSize = 32768}
-              }
-              Write-Host "Pagefile expanded successfully."
-          } catch {
-              Write-Host "Skipping pagefile modification: $_"
+          $ErrorActionPreference = 'Stop'
+          if ($env:REQUEST_ID -notmatch '^[a-zA-Z0-9-]{1,64}$') { throw 'Invalid request_id.' }
+          $minutes = 0
+          if (-not [int]::TryParse($env:DURATION, [ref]$minutes) -or $minutes -lt 10 -or $minutes -gt 300) {
+            throw 'duration_minutes must be 10–300.'
           }
-
-      - name: Configure Core RDP Settings
-        run: |
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0 -Force
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 0 -Force
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "SecurityLayer" -Value 0 -Force
-
-          netsh advfirewall firewall delete rule name="RDP-Tailscale"
-          netsh advfirewall firewall add rule name="RDP-Tailscale" dir=in action=allow protocol=TCP localport=3389
-          Restart-Service -Name TermService -Force
-
-      - name: Create RDP User
-        run: |
-          $password = "Password123456!"
-          $securePass = ConvertTo-SecureString $password -AsPlainText -Force
-          New-LocalUser -Name "RDP" -Password $securePass -AccountNeverExpires
-          Add-LocalGroupMember -Group "Administrators" -Member "RDP"
-          Add-LocalGroupMember -Group "Remote Desktop Users" -Member "RDP"
+          if (-not $env:TS_AUTH_KEY) { throw 'Missing TAILSCALE_AUTH_KEY secret.' }
+          if ($env:RDP_PASSWORD.Length -lt 14 -or $env:RDP_PASSWORD -cnotmatch '[A-Z]' -or
+              $env:RDP_PASSWORD -cnotmatch '[a-z]' -or $env:RDP_PASSWORD -notmatch '[0-9]' -or
+              $env:RDP_PASSWORD -notmatch '[^a-zA-Z0-9]') {
+            throw 'RDP_PASSWORD must have 14+ characters, upper/lowercase, number and symbol.'
+          }
 
       - name: Install Tailscale
+        shell: pwsh
         run: |
-          $tsUrl = "https://pkgs.tailscale.com/stable/tailscale-setup-1.82.0-amd64.msi"
-          $installerPath = "$env:TEMP\tailscale.msi"
-          Invoke-WebRequest -Uri $tsUrl -OutFile $installerPath
-          Start-Process msiexec.exe -ArgumentList "/i", "`"$installerPath`"", "/quiet", "/norestart" -Wait
-          Remove-Item $installerPath -Force
+          $ErrorActionPreference = 'Stop'
+          $installer = Join-Path $env:RUNNER_TEMP 'tailscale.msi'
+          Invoke-WebRequest 'https://pkgs.tailscale.com/stable/tailscale-setup-1.82.0-amd64.msi' -OutFile $installer
+          $signature = Get-AuthenticodeSignature $installer
+          if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'Tailscale') {
+            throw 'Tailscale installer signature verification failed.'
+          }
+          $process = Start-Process msiexec.exe -ArgumentList "/i `"$installer`" /quiet /norestart" -Wait -PassThru
+          if ($process.ExitCode -notin @(0, 3010)) { throw "Installer failed: $($process.ExitCode)" }
+          Remove-Item $installer
 
-      - name: Establish Tailscale Connection
+      - name: Establish Tailscale connection
+        shell: pwsh
+        env:
+          TS_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
         run: |
-          & "$env:ProgramFiles\Tailscale\tailscale.exe" up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=github-max-pc
-          
-          $tsIP = $null
-          $retries = 0
-          while (-not $tsIP -and $retries -lt 10) {
-              $tsIP = & "$env:ProgramFiles\Tailscale\tailscale.exe" ip -4
-              Start-Sleep -Seconds 5
-              $retries++
-          }
-          
-          if (-not $tsIP) {
-              Write-Error "Tailscale IP not assigned. Exiting."
-              exit 1
-          }
-          echo "TAILSCALE_IP=$tsIP" >> $env:GITHUB_ENV
+          $ErrorActionPreference = 'Stop'
+          $ts = "$env:ProgramFiles\Tailscale\tailscale.exe"
+          & $ts up "--auth-key=$env:TS_AUTH_KEY" "--hostname=rdp-$env:GITHUB_RUN_ID" --accept-routes=false --timeout=90s
+          if ($LASTEXITCODE -ne 0) { throw 'Tailscale login failed. Check key expiry, reuse, approval and ACLs.' }
+          $ip = (& $ts ip -4 | Select-Object -First 1).Trim()
+          if ($LASTEXITCODE -ne 0 -or $ip -notmatch '^100\.') { throw 'No Tailscale IPv4 assigned.' }
+          "TAILSCALE_IP=$ip" >> $env:GITHUB_ENV
 
-      - name: Maintain Connection
+      - name: Configure secure RDP
+        shell: pwsh
+        env:
+          RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
         run: |
-          Write-Host "`n=========================================="
-          Write-Host "RDP CONNECT INFO:"
-          Write-Host "Address : $env:TAILSCALE_IP"
-          Write-Host "Username: RDP"
-          Write-Host "Password: Password123456!"
-          Write-Host "==========================================`n"
-          
-          while ($true) {
-              Write-Host "[$(Get-Date)] RDP Still Active..."
-              Start-Sleep -Seconds 300
+          $ErrorActionPreference = 'Stop'
+          $password = ConvertTo-SecureString $env:RDP_PASSWORD -AsPlainText -Force
+          New-LocalUser -Name RDP -Password $password -AccountNeverExpires
+          # Standard RDP user; no local administrator membership.
+          $group = (Get-LocalGroup -SID 'S-1-5-32-555').Name
+          Add-LocalGroupMember -Group $group -Member RDP
+          Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\Terminal Server' fDenyTSConnections 0
+          $rdp = 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp'
+          Set-ItemProperty $rdp UserAuthentication 1
+          Set-ItemProperty $rdp SecurityLayer 2
+          Get-NetFirewallPortFilter | Where-Object { $_.LocalPort -eq '3389' } |
+            Get-NetFirewallRule | Disable-NetFirewallRule
+          New-NetFirewallRule -DisplayName RDP-Tailscale -Direction Inbound -Action Allow `
+            -Protocol TCP -LocalPort 3389 -LocalAddress $env:TAILSCALE_IP -RemoteAddress '100.64.0.0/10'
+          Restart-Service TermService -Force
+          $listening = $false
+          foreach ($attempt in 1..12) {
+            if (Get-NetTCPConnection -State Listen -LocalPort 3389 -ErrorAction SilentlyContinue) { $listening = $true; break }
+            Start-Sleep 5
           }
+          if (-not $listening) { throw 'RDP service is not listening on port 3389.' }
+
+      - name: Publish connection info
+        shell: pwsh
+        env:
+          REQUEST_ID: ${{ inputs.request_id }}
+          DURATION: ${{ inputs.duration_minutes }}
+        run: |
+          # RDP_LAUNCHER_PROTOCOL_V1 — checked by the desktop app before dispatch.
+          $now = [DateTimeOffset]::UtcNow
+          @{
+            protocol = 1
+            request_id = $env:REQUEST_ID
+            run_id = $env:GITHUB_RUN_ID
+            ip = $env:TAILSCALE_IP
+            username = 'RDP'
+            ready_at = $now.ToString('o')
+            expires_at = $now.AddMinutes([int]$env:DURATION).ToString('o')
+          } | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP\connection.json" -Encoding utf8
+
+      - name: Upload connection info
+        uses: actions/upload-artifact@v4
+        with:
+          name: rdp-connection-${{ inputs.request_id }}
+          path: ${{ runner.temp }}/connection.json
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Maintain session
+        shell: pwsh
+        env:
+          DURATION: ${{ inputs.duration_minutes }}
+        run: |
+          $end = [DateTimeOffset]::UtcNow.AddMinutes([int]$env:DURATION)
+          while ([DateTimeOffset]::UtcNow -lt $end) { Start-Sleep 15 }
+
+      - name: Disconnect Tailscale
+        if: always()
+        shell: pwsh
+        run: |
+          $ts = "$env:ProgramFiles\Tailscale\tailscale.exe"
+          if (Test-Path $ts) { & $ts logout }

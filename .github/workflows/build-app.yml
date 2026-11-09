@@ -1,0 +1,40 @@
+name: Build Windows app
+on:
+  pull_request:
+    paths:
+      - "desktop/**"
+      - "tests/**"
+      - ".github/workflows/build-app.yml"
+      - "README.md"
+      - "RELEASE_*.md"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Run contract tests
+        run: dotnet run --project tests/ContractTests.csproj
+      - name: Test Windows token persistence
+        run: dotnet run --project tests/WindowsTokenTests/WindowsTokenTests.csproj
+      - name: Build standalone EXE
+        run: dotnet publish desktop/RdpLauncher/RdpLauncher.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=None -o artifacts
+      - name: Package download
+        shell: pwsh
+        run: |
+          Copy-Item README.md, RELEASE_NOTES.md, RELEASE_PROMPT.md artifacts/
+          Copy-Item .github/workflows/main.yml artifacts/main.yml
+          $hash = (Get-FileHash artifacts/RdpLauncher.exe -Algorithm SHA256).Hash.ToLower()
+          "$hash  RdpLauncher.exe" | Set-Content artifacts/SHA256.txt
+          Compress-Archive -Path artifacts/* -DestinationPath RDP-Launcher-v1.1.0-Windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RdpLauncher-win-x64
+          path: RDP-Launcher-v1.1.0-Windows-x64.zip
+          if-no-files-found: error

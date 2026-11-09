@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+artifacts/
+.vs/
+
+**/github-token.dat
+**/github-token.dat.*.tmp

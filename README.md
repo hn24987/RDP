@@ -4,6 +4,10 @@
 
 A Windows desktop launcher for temporary RDP sessions on **your own GitHub fork**, connected through Tailscale. The entire app interface is in English. The standalone Windows x64 EXE does not require Python or a separate .NET installation.
 
+## Download
+
+Get the standalone **RdpLauncher.exe** or the complete ZIP from [GitHub Releases](https://github.com/hn24987/RDP/releases/latest). No installer is required.
+
 ## First-time setup
 
 1. **Fork https://github.com/hn24987/RDP into your account.** Do not enter the source repository URL in the launcher. If your fork predates this release, sync it with the updated source or replace `.github/workflows/main.yml` with the workflow included in this download.

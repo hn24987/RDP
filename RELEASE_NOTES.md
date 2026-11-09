@@ -15,7 +15,7 @@ Launch a temporary Windows RDP session from an English desktop app using **your 
 
 ## Download
 
-Download `RDP-Launcher-v1.1.0-Windows-x64.zip`, extract it into a writable folder, and open `RdpLauncher.exe`. No Python or separate .NET installation is required.
+Download **RdpLauncher.exe** to run the app directly, or download **RDP-Launcher-v1.1.0-Windows-x64.zip** for the app, workflow and setup/release documents. Keep the EXE in a writable folder. No Python or separate .NET installation is required.
 
 **Supported:** Windows 10/11 x64 with Internet access and Tailscale.
 
@@ -39,4 +39,4 @@ Sync your fork with the updated project or replace `.github/workflows/main.yml` 
 - Saved tokens are tied to your Windows account; copying the token file to another account/machine does not transfer sign-in. Do not share or upload that file.
 - Preflight checks secret presence, not secret values. Auth Key validity, runner availability/quota/billing, runtime policy, device approval and ACL access are confirmed during startup/connection.
 - Sessions and runner storage are temporary. Save important files before stopping the workflow.
-- Build and automated contract checks were completed in Linux. Windows UI, DPAPI behavior and live RDP login still need Windows end-to-end validation; a Windows token-storage test is included in the build workflow.
+- The Windows build, 34 contract tests and Windows DPAPI token-storage smoke test passed in GitHub Actions. Interactive Windows UI and live RDP login still need end-to-end validation.

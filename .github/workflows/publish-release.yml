@@ -1,0 +1,84 @@
+name: Publish v1.1.0 release
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-release.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: publish-v1.1.0
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.repository == 'hn24987/RDP' && github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Run contract tests
+        run: dotnet run --project tests/ContractTests.csproj
+      - name: Test Windows token persistence
+        run: dotnet run --project tests/WindowsTokenTests/WindowsTokenTests.csproj
+      - name: Build standalone EXE
+        run: dotnet publish desktop/RdpLauncher/RdpLauncher.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=None -o app
+      - name: Package release assets
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory dist | Out-Null
+          Copy-Item README.md, RELEASE_NOTES.md, RELEASE_PROMPT.md app/
+          Copy-Item .github/workflows/main.yml app/main.yml
+          Compress-Archive -Path app/* -DestinationPath dist/RDP-Launcher-v1.1.0-Windows-x64.zip
+          Copy-Item app/RdpLauncher.exe dist/RdpLauncher.exe
+          Copy-Item RELEASE_PROMPT.md dist/RELEASE_PROMPT.md
+          $checksums = foreach ($file in @('RdpLauncher.exe', 'RDP-Launcher-v1.1.0-Windows-x64.zip')) {
+            $hash = (Get-FileHash "dist/$file" -Algorithm SHA256).Hash.ToLower()
+            "$hash  $file"
+          }
+          $checksums | Set-Content dist/SHA256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-v1.1.0
+          path: dist/*
+          if-no-files-found: error
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-assets-v1.1.0
+          path: dist
+      - name: Create draft, upload assets, then publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: v1.1.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dist
+          sha256sum --check SHA256.txt
+          cd ..
+          if gh release view "$RELEASE_TAG" --json isDraft,targetCommitish,url > release-state.json 2>/dev/null; then
+            if ! jq -e '.isDraft' release-state.json > /dev/null; then
+              echo 'Release is already published; existing assets will not be overwritten.'
+              exit 0
+            fi
+            test "$(jq -r '.targetCommitish' release-state.json)" = "$GITHUB_SHA"
+          else
+            gh release create "$RELEASE_TAG" --draft --target "$GITHUB_SHA" \
+              --title 'RDP Launcher v1.1.0 — Bring Your Own Fork' --notes-file RELEASE_NOTES.md
+          fi
+          gh release upload "$RELEASE_TAG" dist/RdpLauncher.exe \
+            dist/RDP-Launcher-v1.1.0-Windows-x64.zip dist/SHA256.txt dist/RELEASE_PROMPT.md --clobber
+          gh release edit "$RELEASE_TAG" --draft=false --latest
+          gh release view "$RELEASE_TAG" --json url --jq '.url' >> "$GITHUB_STEP_SUMMARY"

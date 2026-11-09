@@ -2,9 +2,9 @@
 
 # RDP Launcher
 
-### A simpler way to start your Windows remote desktop.
+### Connect to a temporary Windows computer from your own PC.
 
-Launch a temporary Windows session, follow its startup, and get your connection IP — all from one desktop app.
+Create a Windows desktop on GitHub Actions, access it through Tailscale, and control it using Remote Desktop. RDP Launcher helps you set up the connection and start each session.
 
 **Created by [hn24987](https://github.com/hn24987)**
 
@@ -16,11 +16,40 @@ Launch a temporary Windows session, follow its startup, and get your connection 
 
 ---
 
-## Meet RDP Launcher
+## What is RDP?
 
-RDP Launcher brings your GitHub Actions RDP workflow into a Windows app. Connect your GitHub account, add the link to **your own fork**, and press **Get RDP**. The app checks your setup, starts the workflow, and displays the IP when your remote desktop is ready.
+**RDP stands for Remote Desktop Protocol.** It lets you see and control another computer over a network. You get a Windows desktop in a window on your own PC, where you can open applications, work with files, and use the mouse and keyboard as if you were sitting in front of that remote machine.
 
-Your PC and the remote machine connect through **Tailscale**, a private network that lets your devices reach each other. Once the session is ready, open Windows Remote Desktop straight from the app.
+The applications run on the **remote computer**. Your PC sends your keyboard and mouse input and displays the remote screen. Both computers need a working network connection.
+
+## What can you use this project for?
+
+This project gives you a **temporary Windows environment** for short learning, development, and testing sessions. For example, you can:
+
+- **Test Windows applications and scripts** in a fresh environment without changing your own Windows installation.
+- **Check Windows-specific behavior**, such as file paths, command-line tools, and application compatibility.
+- **Learn how remote desktops work**, including connecting, signing in, and managing a remote session.
+- **Practice connecting devices with Tailscale** and checking whether your remote desktop is reachable.
+
+The machine is temporary. Save any files you need before the session ends; a new workflow run creates a fresh environment. Available resources and runner usage depend on GitHub's runner configuration, your account limits, and applicable usage policies.
+
+## Where does the Windows computer come from?
+
+Your fork contains a **GitHub Actions workflow** that starts a Windows runner — a temporary machine hosted by GitHub. The workflow enables Remote Desktop, creates your Windows sign-in account, and connects the runner to your Tailscale network.
+
+**Tailscale** gives your PC and the runner private network addresses so they can reach each other. You then use **Windows Remote Desktop** to connect to the runner's address and use its desktop.
+
+The connection looks like this:
+
+**Your PC → Tailscale network → Windows runner on GitHub Actions**
+
+Your own computer runs the launcher and the Remote Desktop client. The remote Windows environment runs on GitHub's infrastructure.
+
+## What does RDP Launcher do?
+
+RDP Launcher is the Windows app that manages this process. Once you have prepared **your own fork**, you can press **Get RDP** to check your setup, start the workflow, follow its progress, and get the remote machine's IP address.
+
+When the machine is ready, click **Open Remote Desktop** and sign in. The launcher also helps you return to an existing session or stop its workflow when you finish.
 
 ## What you get
 

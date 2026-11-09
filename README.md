@@ -1,76 +1,81 @@
-# RDP Launcher v1.1
+<div align="center">
 
-**Created by hn24987** · Source: https://github.com/hn24987/RDP
+# RDP Launcher
 
-A Windows desktop launcher for temporary RDP sessions on **your own GitHub fork**, connected through Tailscale. The entire app interface is in English. The standalone Windows x64 EXE does not require Python or a separate .NET installation.
+### A simpler way to start your Windows remote desktop.
 
-## Download
+Launch a temporary Windows session, follow its startup, and get your connection IP — all from one desktop app.
 
-Get the standalone **RdpLauncher.exe** or the complete ZIP from [GitHub Releases](https://github.com/hn24987/RDP/releases/latest). No installer is required.
+**Created by [hn24987](https://github.com/hn24987)**
 
-## First-time setup
+[**Download for Windows**](https://github.com/hn24987/RDP/releases/latest/download/RdpLauncher.exe) · [Latest release](https://github.com/hn24987/RDP/releases/latest) · [Setup guide](docs/SETUP.md)
 
-1. **Fork https://github.com/hn24987/RDP into your account.** Do not enter the source repository URL in the launcher. If your fork predates this release, sync it with the updated source or replace `.github/workflows/main.yml` with the workflow included in this download.
-2. Open **your fork → Actions** and enable workflows. In **Settings → Actions → General**, allow Actions and `actions/upload-artifact@v4`. Check your GitHub runner quota/billing.
-3. Add these **repository secrets** under **your fork → Settings → Secrets and variables → Actions**. GitHub does **not** copy secrets when you fork:
-   - `TAILSCALE_AUTH_KEY`: a valid **Auth Key**, not an API access token, from https://login.tailscale.com/admin/settings/keys. Use a reusable key for repeated launches; an ephemeral key is recommended for temporary runners. If device approval is required, pre-approve the key/devices. Configure any tags and ACLs/grants for your tailnet.
-   - `RDP_PASSWORD`: at least **14 characters**, including uppercase, lowercase, a digit, and a symbol. Keep it in your password manager; you will type it into Remote Desktop.
-4. Install Tailscale on your Windows PC: https://tailscale.com/download/windows. Sign in to the **same tailnet** as the Auth Key, connect, and ensure your PC is online. ACLs/grants must allow your PC to access the runner on **TCP 3389**.
-5. Create a **fine-grained GitHub personal access token**: https://github.com/settings/personal-access-tokens/new.
-   - Select the owner of your fork, then select **only your fork** under repository access.
-   - Repository permissions: **Actions: Read and write**, **Contents: Read-only**, **Secrets: Read-only**, **Administration: Read-only**. Metadata is automatic.
-   - Complete organization approval/SSO if applicable. Your GitHub account must have write access to the fork.
-   - Administration read checks whether Actions is enabled; Secrets read checks secret names. The launcher does not require Contents write and does not push changes to GitHub.
+**Windows 10 / 11 · x64 · English interface · No installer required**
 
-## Launch a session
+</div>
 
-1. Extract the download into a **writable folder** and open `RdpLauncher.exe`.
-2. On first launch, the app asks for a GitHub token. It validates the token and saves it as **`github-token.dat` beside the EXE**, encrypted using Windows DPAPI for your Windows account. On later launches, it loads automatically. Use **Add / change token** or **Forget token** to replace/delete it. Expired/revoked tokens still need replacing.
-3. Paste **your fork URL**, e.g. `https://github.com/YOUR-USERNAME/RDP`. Repository names may differ; the app verifies the fork network through GitHub. The source repository and unrelated/copied repositories are rejected.
-4. Choose 10–300 minutes. Optionally click **Check setup**, or click **Get RDP**, which always checks first. The app remembers your fork and restores its last run; after reopening, it automatically checks a saved fork when a token is available.
-5. Wait for the IP, then click **Copy IP** or **Open Remote Desktop**. Sign in as `.\RDP` using your `RDP_PASSWORD` secret. Match any certificate prompt to the displayed session IP.
-6. Click **Stop workflow** when finished. Closing the app or clicking **Stop monitoring** does not stop GitHub Actions. Temporary runner data is lost when the session ends.
+---
 
-To return to a session, reopen the app and click **Resume run**. You can also enter its Run ID from `https://github.com/OWNER/REPO/actions/runs/RUN_ID`. Run IDs and request IDs are kept separately per fork in `%LOCALAPPDATA%\RdpLauncher\session-v2.json`; this file contains no token or RDP password. To create another session after the old one ends, clear Run ID. If a request has an uncertain result, the app asks you to check Actions before discarding that request ID, preventing accidental duplicate launches.
+## Meet RDP Launcher
 
-## Preflight checks
+RDP Launcher brings your GitHub Actions RDP workflow into a Windows app. Connect your GitHub account, add the link to **your own fork**, and press **Get RDP**. The app checks your setup, starts the workflow, and displays the IP when your remote desktop is ready.
 
-Independent GitHub and local checks run in parallel. Before dispatch, the app checks:
+Your PC and the remote machine connect through **Tailscale**, a private network that lets your devices reach each other. Once the session is ready, open Windows Remote Desktop straight from the app.
 
-- Your fork URL uses HTTPS on github.com and targets a repository rather than a branch/file/Actions page.
-- Token authentication, repo access, writable fork membership in the `hn24987/RDP` network, and archived/disabled status.
-- Actions enabled, `main.yml` active, and launcher-compatible workflow on the default branch.
-- Presence of **both repository secrets**. Organization/environment secrets are not checked by this version.
-- Read access to workflow runs; existing sessions are reported in the log.
-- Tailscale installed; CLI/service responsive; signed in, switched on and online. Messages distinguish signed-out, switched-off, device-approval and offline states. Use **Install Tailscale** or **Open Tailscale** to fix setup.
-- After startup: connection artifact matches its run/request, its IP is in the Tailscale range, its session has not expired, and your PC can reach TCP 3389.
+## What you get
 
-GitHub does not reveal secret values. Preflight cannot prove an Auth Key is still valid, the password meets Windows policy, ACLs allow access, devices are approved, runner quota/billing is sufficient, or all runtime policies allow execution. The runner and connection checks confirm those later. Actions write permission is confirmed by the actual dispatch, not by a read request. The app never silently repeats a dispatch after an uncertain network response.
+- **One place to launch and connect.** Start the workflow, see its progress, copy the IP, and open Remote Desktop.
+- **Checks before startup.** Find missing secrets, disabled workflows, or GitHub access problems before starting a session.
+- **Tailscale readiness checks.** See whether Tailscale is installed, signed in, connected, and online.
+- **Your setup, remembered.** Your fork and session details are saved. Your GitHub token is encrypted for your Windows account and loaded on the next launch.
+- **Session controls.** Choose a duration, resume monitoring an existing run, or stop the workflow when you finish.
 
-## Token storage
+## Get started
 
-Only encrypted token bytes are stored beside the EXE. DPAPI ties decryption to your Windows account; copying `github-token.dat` to another user or machine is not a portable login. This protects the file at rest; software running under your Windows account can still access your account's secrets. Do not upload this file with your release or commit it. It is excluded by `.gitignore` and packaging scripts. If the folder is read-only, move the app to a writable folder and retry.
+### 1. Download the app
 
-## Troubleshooting
+**[Download RdpLauncher.exe](https://github.com/hn24987/RDP/releases/latest/download/RdpLauncher.exe)** and place it in a folder you can write to, such as a new folder in Downloads. Open it to get started. You do not need to install Python or .NET.
 
-- **403 / missing permissions:** check PAT repository selection, permission levels, organization approval/SSO, and API limits.
-- **Workflow missing/disabled on a fork:** enable Actions in your fork and sync the updated workflow. Forking alone does not enable every workflow or copy secrets.
-- **IP appears but connection fails:** check the tailnet, device approval, ACLs/grants and TCP 3389. Use Resume run to refresh; displayed connection details reflect the last check.
-- **Expired session:** clear Run ID and launch again. A session lasts up to your chosen duration; the job has a 360-minute overall cap including setup.
-- **Saved token cannot be decrypted:** use Add / change token under the Windows account now running the app.
+Want the app together with instructions and the workflow file? Get the **[complete ZIP from Releases](https://github.com/hn24987/RDP/releases/latest)**.
 
-Connection artifacts contain the IP, username and session timing, never the RDP password. On public forks, users who can read Actions may see this metadata. The EXE is unsigned; Windows SmartScreen may ask you to verify its publisher. Source is included so you can inspect and build it yourself.
+### 2. Prepare your fork — once
 
-## Build from source
+**[Fork this project](https://github.com/hn24987/RDP/fork)** into your GitHub account, then set up:
 
-With .NET 8 SDK:
+| What you need | What it does |
+| --- | --- |
+| GitHub Actions enabled in your fork | Runs the temporary Windows machine. |
+| `TAILSCALE_AUTH_KEY` repository secret | Connects the remote machine to your Tailscale network. |
+| `RDP_PASSWORD` repository secret | Sets the password you will use to sign in to Windows. |
+| Tailscale installed and connected on your PC | Lets your PC reach the remote machine. |
+| A GitHub token with access to your fork | Lets the app check your setup and start the workflow. |
 
-```powershell
-dotnet run --project tests/ContractTests.csproj
-dotnet run --project tests/WindowsTokenTests/WindowsTokenTests.csproj # Windows only
-dotnet publish desktop/RdpLauncher/RdpLauncher.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=None -o artifacts
-```
+**New here? Follow the [step-by-step setup guide](docs/SETUP.md#first-time-setup).** It shows where to create each key, which token permissions to choose, and where to add your secrets.
 
-Or, after adding this source to your repository's default branch, open **Actions → Build Windows app → Run workflow**, then download **RdpLauncher-win-x64**. That build also runs the Windows token-storage smoke test. See `RELEASE_NOTES.md` for ready-to-paste release text and `RELEASE_PROMPT.md` for a reusable release-writing prompt.
+> Use **your fork's URL** in the app, such as `https://github.com/YOUR-USERNAME/RDP`. GitHub does not copy secrets when you fork, so you must add your own. Both devices need to use the same Tailscale network.
 
-The workflow creates a standard RDP user with NLA/TLS, limits its RDP firewall rule to Tailscale addresses, publishes connection metadata before keeping the session alive, and logs out of Tailscale during cleanup. Use this temporary environment for testing in accordance with GitHub Actions and Tailscale terms.
+### 3. Get your RDP session
+
+1. Open `RdpLauncher.exe` and enter your GitHub token when prompted on the first launch.
+2. Paste **your fork URL**, choose a session duration, and click **Get RDP**.
+3. Wait for the IP, then click **Open Remote Desktop**.
+4. Sign in as **`.\RDP`** using the password you saved in **`RDP_PASSWORD`**.
+
+After the initial setup, the app remembers your token and fork. You can also use **Check setup** to check your configuration without starting a machine.
+
+## When you're finished
+
+Click **Stop workflow** to end the remote session. Closing the app or choosing **Stop monitoring** leaves the workflow running; use **Resume run** if you want to return to it.
+
+Sessions last **10–300 minutes**, depending on your selection. The remote machine and its files are temporary, so save anything you need before the session ends. Runner availability and usage depend on your GitHub account's limits and policies.
+
+## Need a hand?
+
+- [Full setup and connection guide](docs/SETUP.md)
+- [Troubleshooting](docs/SETUP.md#troubleshooting)
+- [Token storage and privacy](docs/SETUP.md#token-storage)
+- [Build from source](docs/SETUP.md#build-from-source)
+- [Release notes](RELEASE_NOTES.md)
+- [Report an issue](https://github.com/hn24987/RDP/issues)
+
+Use this project for testing in accordance with GitHub Actions and Tailscale terms.

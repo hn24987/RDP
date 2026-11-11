@@ -69,9 +69,7 @@ Want the app together with instructions and the workflow file? Get the **[comple
 
 ### 2. Prepare your repository — once
 
-**Project owner:** use `https://github.com/hn24987/RDP-Launcher` directly with a GitHub token that has access to it. You do not need to fork your own project.
-
-**Other users:** [fork this project](https://github.com/hn24987/RDP-Launcher/fork) into your account. Then set up the following in the repository you will run:
+**Note:** [fork this project](https://github.com/hn24987/RDP-Launcher/fork) into your account. Then set up the following in the repository you will run:
 
 | What you need | What it does |
 | --- | --- |

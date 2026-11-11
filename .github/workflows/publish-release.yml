@@ -2,6 +2,8 @@ name: Publish release
 on:
   push:
     tags: ['v*']
+    branches: [main]
+    paths: ['.github/release-request']
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,7 +23,14 @@ jobs:
       - name: Resolve and validate release version
         id: version
         shell: pwsh
-        run: ./scripts/Get-BuildVersion.ps1 -GithubOutput $env:GITHUB_OUTPUT
+        run: |
+          ./scripts/Get-BuildVersion.ps1 -GithubOutput $env:GITHUB_OUTPUT
+          if ($env:GITHUB_EVENT_NAME -eq 'push' -and $env:GITHUB_REF -eq 'refs/heads/main') {
+            . ./scripts/Get-BuildVersion.ps1
+            $version = (Resolve-BuildVersion -ProjectPath ./desktop/RdpLauncher/RdpLauncher.csproj).Version
+            $requested = (Get-Content .github/release-request -Raw).Trim()
+            if ($requested -cne $version) { throw 'Release request must match the project version.' }
+          }
   build:
     name: Build ${{ matrix.runtime }}
     needs: version

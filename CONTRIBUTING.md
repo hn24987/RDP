@@ -74,3 +74,7 @@ The Windows build is defined in `.github/workflows/build-app.yml`. Versions and 
 ## License
 
 By submitting a contribution, you agree that it may be distributed under this project's [MIT License](LICENSE). Keep attribution and third-party notices intact.
+
+### Requesting a release from main
+
+Maintainers may also commit a version-only `.github/release-request` file on `main`. Its value must match `<Version>` in the project. A change to that file triggers publication with the same validation, Windows builds and checksum checks as tag/manual releases. Changing ordinary source files does not trigger publication. Published release assets are never replaced.

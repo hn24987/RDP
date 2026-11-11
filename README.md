@@ -4,7 +4,7 @@
 
 ### Connect to a cloud Windows computer from your own PC.
 
-Create a Windows desktop on GitHub Actions, access it through Tailscale, and control it using Remote Desktop. RDP Launcher helps you set up the connection and start each session.
+Create a Windows desktop on GitHub Actions, access it through Tailscale, and control it using Remote Desktop. RDP Launcher helps you set up the connection and start each session for completely free.
 
 [![Windows build](https://github.com/hn24987/RDP-Launcher/actions/workflows/build-app.yml/badge.svg)](https://github.com/hn24987/RDP-Launcher/actions/workflows/build-app.yml)
 [![Latest release](https://img.shields.io/github/v/release/hn24987/RDP-Launcher)](https://github.com/hn24987/RDP-Launcher/releases/latest)

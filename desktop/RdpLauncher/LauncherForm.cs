@@ -35,7 +35,7 @@ public sealed class LauncherForm : Form
 
     public LauncherForm()
     {
-        Text = "RDP Launcher v1.1 · Created by hn24987";
+        Text = "RDP Launcher v1.1.1 · Created by hn24987";
         Size = new Size(960, 830);
         MinimumSize = new Size(860, 720);
         Font = new Font("Segoe UI", 10);
@@ -44,9 +44,9 @@ public sealed class LauncherForm : Form
         layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         layout.Controls.Add(new Label { Text = "RDP Launcher", Font = new Font("Segoe UI", 21, FontStyle.Bold), AutoSize = true });
         layout.Controls.Add(Row(new Label { Text = "Created by hn24987", AutoSize = true },
-            Link("Source: github.com/hn24987/RDP", RepositoryAddress.SourceUrl), Link("Fork this project", RepositoryAddress.SourceUrl + "/fork")));
-        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(880, 0), Text = "1. Fork the project into your GitHub account.  2. Enable Actions and add secrets in your fork.  3. Paste YOUR fork URL below." });
-        layout.Controls.Add(Row(new Label { Text = "Your fork URL", AutoSize = true }, repository));
+            Link("Source: github.com/hn24987/RDP-Launcher", RepositoryAddress.SourceUrl), Link("Fork this project", RepositoryAddress.SourceUrl + "/fork")));
+        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(880, 0), Text = "Use a repository you control. Owners can use hn24987/RDP-Launcher directly; other users should fork the project. Enable Actions and add the required secrets." });
+        layout.Controls.Add(Row(new Label { Text = "Repository URL", AutoSize = true }, repository));
         layout.Controls.Add(forkStatus);
         layout.Controls.Add(Row(tokenStatus, changeToken, forgetToken,
             new Label { Text = "Session (minutes)", AutoSize = true }, duration));
@@ -155,7 +155,7 @@ public sealed class LauncherForm : Form
             }
         }
         catch { Write("Could not load the previous session. You can enter a Run ID manually."); }
-        Write("First run: fork the source project, enable Actions, then add TAILSCALE_AUTH_KEY and RDP_PASSWORD to YOUR fork. Secrets are not copied when forking.");
+        Write("First run: select the source repository (with write access) or your fork. Enable Actions and add TAILSCALE_AUTH_KEY and RDP_PASSWORD. Forks do not inherit secrets.");
         UpdateStart();
     }
     static FlowLayoutPanel Row(params Control[] controls)
@@ -183,8 +183,8 @@ public sealed class LauncherForm : Form
     void UpdateStart()
     {
         var valid = false;
-        try { var name = RepositoryAddress.Parse(repository.Text); forkStatus.Text = $"Target: {name} · ownership and fork lineage will be verified with GitHub."; valid = true; }
-        catch (InvalidOperationException ex) { forkStatus.Text = string.IsNullOrWhiteSpace(repository.Text) ? "Paste your own fork URL to enable Check setup and Get RDP." : ex.Message; }
+        try { var name = RepositoryAddress.Parse(repository.Text); forkStatus.Text = $"Target: {name} · write access and project membership will be verified with GitHub."; valid = true; }
+        catch (InvalidOperationException ex) { forkStatus.Text = string.IsNullOrWhiteSpace(repository.Text) ? "Paste the source repository URL or your fork URL to enable Check setup and Get RDP." : ex.Message; }
         start.Enabled = check.Enabled = !busy && valid && !string.IsNullOrWhiteSpace(token);
     }
     void AskForToken()
@@ -231,7 +231,7 @@ public sealed class LauncherForm : Form
     async Task<string> Preflight(GitHubClient api, CancellationToken ct)
     {
         ClearConnection();
-        Write("Checking local Tailscale and your fork in parallel…");
+        Write("Checking local Tailscale and your repository in parallel…");
         var local = CheckTailscale(ct);
         var github = api.Preflight(Write, ct);
         try { await Task.WhenAll(local, github); }

@@ -6,7 +6,7 @@ Set up your own fork once, then use **Get RDP** to start future sessions.
 
 ## First-time setup
 
-1. **Fork https://github.com/hn24987/RDP into your account.** Do not enter the source repository URL in the launcher. If your fork predates this release, sync it with the updated source or replace `.github/workflows/main.yml` with the workflow included in this download.
+1. **Select a repository you control.** The project owner can enter `https://github.com/hn24987/RDP-Launcher` directly. Other users should fork the project into their account. If your fork predates this release, sync it with the updated source or replace `.github/workflows/main.yml` with the workflow included in this download.
 2. Open **your fork → Actions** and enable workflows. In **Settings → Actions → General**, allow Actions and `actions/upload-artifact@v4`. Check your GitHub runner quota/billing.
 3. Add these **repository secrets** under **your fork → Settings → Secrets and variables → Actions**. GitHub does **not** copy secrets when you fork:
    - `TAILSCALE_AUTH_KEY`: a valid **Auth Key**, not an API access token, from https://login.tailscale.com/admin/settings/keys. Use a reusable key for repeated launches; an ephemeral key is recommended for temporary runners. If device approval is required, pre-approve the key/devices. Configure any tags and ACLs/grants for your tailnet.
@@ -22,7 +22,7 @@ Set up your own fork once, then use **Get RDP** to start future sessions.
 
 1. Extract the download into a **writable folder** and open `RdpLauncher.exe`.
 2. On first launch, the app asks for a GitHub token. It validates the token and saves it as **`github-token.dat` beside the EXE**, encrypted using Windows DPAPI for your Windows account. On later launches, it loads automatically. Use **Add / change token** or **Forget token** to replace/delete it. Expired/revoked tokens still need replacing.
-3. Paste **your fork URL**, e.g. `https://github.com/YOUR-USERNAME/RDP`. Repository names may differ; the app verifies the fork network through GitHub. The source repository and unrelated/copied repositories are rejected.
+3. Paste **your repository URL**, e.g. `https://github.com/YOUR-USERNAME/RDP`. Repository names may differ; the app verifies the fork network through GitHub. The source repository requires write access; unrelated/copied repositories are rejected.
 4. Choose 10–300 minutes. Optionally click **Check setup**, or click **Get RDP**, which always checks first. The app remembers your fork and restores its last run; after reopening, it automatically checks a saved fork when a token is available.
 5. Wait for the IP, then click **Copy IP** or **Open Remote Desktop**. Sign in as `.\RDP` using your `RDP_PASSWORD` secret. Match any certificate prompt to the displayed session IP.
 6. Click **Stop workflow** when finished. Closing the app or clicking **Stop monitoring** does not stop GitHub Actions. Temporary runner data is lost when the session ends.
@@ -34,7 +34,7 @@ To return to a session, reopen the app and click **Resume run**. You can also en
 Independent GitHub and local checks run in parallel. Before dispatch, the app checks:
 
 - Your fork URL uses HTTPS on github.com and targets a repository rather than a branch/file/Actions page.
-- Token authentication, repo access, writable fork membership in the `hn24987/RDP` network, and archived/disabled status.
+- Token authentication, repo access, writable fork membership in the `hn24987/RDP-Launcher` network, and archived/disabled status.
 - Actions enabled, `main.yml` active, and launcher-compatible workflow on the default branch.
 - Presence of **both repository secrets**. Organization/environment secrets are not checked by this version.
 - Read access to workflow runs; existing sessions are reported in the log.

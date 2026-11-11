@@ -51,7 +51,7 @@ await AsyncTest("preflight rejects missing secret before dispatch", async () =>
         object data = path switch
         {
             "/user" => new { login = "owner" },
-            "/repos/owner/repo" => new { archived = false, fork = true, source = new { full_name = "hn24987/RDP" }, permissions = new { push = true }, default_branch = "main" },
+            "/repos/owner/repo" => new { archived = false, fork = true, source = new { full_name = "hn24987/RDP-Launcher" }, permissions = new { push = true }, default_branch = "main" },
             "/repos/owner/repo/actions/permissions" => new { enabled = true },
             "/repos/owner/repo/actions/workflows/main.yml" => new { state = "active" },
             "/repos/owner/repo/contents/.github/workflows/main.yml" => new { content = Convert.ToBase64String(Encoding.UTF8.GetBytes("workflow_dispatch: RDP_LAUNCHER_PROTOCOL_V1")) },
@@ -93,20 +93,25 @@ await AsyncTest("download and validate ready artifact while job is still running
     Assert(info?.Ip == "100.88.1.2" && calls == 2);
 });
 Test("normalize full fork URL", () => Assert(RepositoryAddress.Parse(" https://github.com/alice/RDP.git/ ") == "alice/RDP"));
-Test("reject upstream source as target", () => Reject(() => RepositoryAddress.Parse("https://github.com/HN24987/rdp")));
+Test("accept source repository URL", () => Assert(RepositoryAddress.Parse("https://github.com/HN24987/rdp") == "HN24987/rdp"));
 Test("reject non-GitHub host", () => Reject(() => RepositoryAddress.Parse("https://github.com.evil.test/alice/RDP")));
 Test("reject URL credentials", () => Reject(() => RepositoryAddress.Parse("https://token@github.com/alice/RDP")));
 Test("reject plain owner/repo", () => Reject(() => RepositoryAddress.Parse("alice/RDP")));
 Test("reject Actions URL", () => Reject(() => RepositoryAddress.Parse("https://github.com/alice/RDP/actions")));
 Test("reject query parameters", () => Reject(() => RepositoryAddress.Parse("https://github.com/alice/RDP?token=x")));
 Test("reject non-HTTPS fork URL", () => Reject(() => RepositoryAddress.Parse("http://github.com/alice/RDP")));
-JsonElement Metadata(bool fork = true, string source = "hn24987/RDP", bool push = true, bool archived = false) =>
+JsonElement Metadata(bool fork = true, string source = "hn24987/RDP-Launcher", bool push = true, bool archived = false) =>
     JsonSerializer.SerializeToElement(new { fork, source = new { full_name = source }, permissions = new { push }, archived });
-Test("accept writable RDP fork", () => GitHubClient.ValidateFork(Metadata()));
-Test("reject copied repository", () => Reject(() => GitHubClient.ValidateFork(Metadata(fork: false))));
-Test("reject unrelated fork network", () => Reject(() => GitHubClient.ValidateFork(Metadata(source: "someone/other"))));
-Test("reject read-only fork access", () => Reject(() => GitHubClient.ValidateFork(Metadata(push: false))));
-Test("reject archived fork", () => Reject(() => GitHubClient.ValidateFork(Metadata(archived: true))));
+Test("accept writable RDP fork", () => GitHubClient.ValidateRepository(Metadata()));
+Test("reject copied repository", () => Reject(() => GitHubClient.ValidateRepository(Metadata(fork: false))));
+Test("reject unrelated fork network", () => Reject(() => GitHubClient.ValidateRepository(Metadata(source: "someone/other"))));
+Test("reject read-only fork access", () => Reject(() => GitHubClient.ValidateRepository(Metadata(push: false))));
+Test("reject archived fork", () => Reject(() => GitHubClient.ValidateRepository(Metadata(archived: true))));
+Test("accept writable source without fork metadata", () => GitHubClient.ValidateRepository(JsonSerializer.SerializeToElement(new { full_name = "hn24987/RDP-Launcher", fork = false, archived = false, permissions = new { push = true } })));
+Test("source URL cannot bypass write permission", () => Reject(() => GitHubClient.ValidateRepository(JsonSerializer.SerializeToElement(new { full_name = "hn24987/RDP-Launcher", fork = false, archived = false, permissions = new { push = false } }))));
+Test("source cannot bypass archived check", () => Reject(() => GitHubClient.ValidateRepository(JsonSerializer.SerializeToElement(new { full_name = "hn24987/RDP-Launcher", fork = false, archived = true, permissions = new { push = true } }))));
+Test("source cannot bypass disabled check", () => Reject(() => GitHubClient.ValidateRepository(JsonSerializer.SerializeToElement(new { full_name = "hn24987/RDP-Launcher", fork = false, archived = false, disabled = true, permissions = new { push = true } }))));
+Test("accept legacy source alias after rename", () => GitHubClient.ValidateRepository(JsonSerializer.SerializeToElement(new { full_name = "hn24987/RDP", fork = false, archived = false, permissions = new { push = true } })));
 string State(string backend, bool online = false) => JsonSerializer.Serialize(new { BackendState = backend, Self = new { Online = online } });
 Test("Tailscale ready", () => Assert(TailscaleCheck.StatusProblem(State("Running", true)) is null));
 Test("Tailscale switched off", () => Assert(TailscaleCheck.StatusProblem(State("Stopped"))!.Contains("switched off")));
@@ -122,7 +127,7 @@ await AsyncTest("preflight success uses GET only and returns default branch", as
         object response = req.RequestUri!.AbsolutePath switch
         {
             "/user" => new { login = "owner" },
-            "/repos/owner/repo" => new { archived = false, fork = true, source = new { full_name = "hn24987/RDP" }, permissions = new { push = true }, default_branch = "develop" },
+            "/repos/owner/repo" => new { archived = false, fork = true, source = new { full_name = "hn24987/RDP-Launcher" }, permissions = new { push = true }, default_branch = "develop" },
             "/repos/owner/repo/actions/permissions" => new { enabled = true },
             "/repos/owner/repo/actions/workflows/main.yml" => new { state = "active" },
             "/repos/owner/repo/contents/.github/workflows/main.yml" => new { content = Convert.ToBase64String(Encoding.UTF8.GetBytes("workflow_dispatch: RDP_LAUNCHER_PROTOCOL_V1")) },

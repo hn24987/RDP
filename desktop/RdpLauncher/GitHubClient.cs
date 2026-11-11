@@ -38,7 +38,7 @@ public sealed class GitHubClient : IDisposable
             {
                 HttpStatusCode.Unauthorized => "Your token is invalid or expired. Use Change token to sign in again.",
                 HttpStatusCode.Forbidden => "Check token permissions, organization approval/SSO, Actions policy, or API rate limits.",
-                HttpStatusCode.NotFound => "Repository/workflow not found or your token does not have access. Select YOUR fork when creating the token.",
+                HttpStatusCode.NotFound => "Repository/workflow not found or your token does not have access. Select the repository when creating the token.",
                 HttpStatusCode.UnprocessableEntity => "Check the branch, workflow_dispatch, and workflow inputs.",
                 _ => "Open Actions / logs for details. If dispatch may have succeeded, use Resume run instead of creating another session."
             };
@@ -56,32 +56,37 @@ public sealed class GitHubClient : IDisposable
         return user.GetProperty("login").GetString()!;
     }
 
-    public static void ValidateFork(JsonElement metadata)
+    public static void ValidateRepository(JsonElement metadata)
     {
-        if (!metadata.TryGetProperty("fork", out var fork) || !fork.GetBoolean())
-            throw new InvalidOperationException("This repository is not a GitHub fork. Fork hn24987/RDP, then paste your fork URL.");
-        if (!metadata.TryGetProperty("source", out var source) ||
-            !string.Equals(source.GetProperty("full_name").GetString(), RepositoryAddress.Source, StringComparison.OrdinalIgnoreCase))
-            throw new InvalidOperationException("This fork does not belong to the hn24987/RDP fork network.");
+        var isSource = metadata.TryGetProperty("full_name", out var fullName) &&
+            RepositoryAddress.IsSource(fullName.GetString());
+        if (!isSource)
+        {
+            if (!metadata.TryGetProperty("fork", out var fork) || !fork.GetBoolean())
+                throw new InvalidOperationException("Use hn24987/RDP-Launcher if you have write access, or a fork of that project that you control.");
+            if (!metadata.TryGetProperty("source", out var source) ||
+                !RepositoryAddress.IsSource(source.GetProperty("full_name").GetString()))
+                throw new InvalidOperationException("This fork does not belong to the hn24987/RDP-Launcher fork network.");
+        }
         if (!metadata.TryGetProperty("permissions", out var permissions) ||
             !permissions.TryGetProperty("push", out var push) || !push.GetBoolean())
-            throw new InvalidOperationException("Your GitHub account must have write access to this fork. Check the fork owner and token repository selection.");
+            throw new InvalidOperationException("Your GitHub account must have write access to this repository. Check the repository owner and token repository selection.");
         if (metadata.GetProperty("archived").GetBoolean())
-            throw new InvalidOperationException("This fork is archived. Unarchive it before running workflows.");
+            throw new InvalidOperationException("This repository is archived. Unarchive it before running workflows.");
         if (metadata.TryGetProperty("disabled", out var disabled) && disabled.GetBoolean())
-            throw new InvalidOperationException("This fork is disabled by GitHub.");
+            throw new InvalidOperationException("This repository is disabled by GitHub.");
     }
 
     public async Task<string> Preflight(Action<string> log, CancellationToken ct)
     {
-        log("Checking GitHub authentication and fork…");
+        log("Checking GitHub authentication and repository…");
         var userTask = GetIdentity(ct);
         var metadataTask = Request(HttpMethod.Get, repo, null, ct);
         await Task.WhenAll(userTask, metadataTask);
         var metadata = await metadataTask;
-        ValidateFork(metadata);
+        ValidateRepository(metadata);
         var branch = metadata.GetProperty("default_branch").GetString()!;
-        log($"PASS · Signed in as {await userTask}; verified your RDP fork; default branch: {branch}");
+        log($"PASS · Signed in as {await userTask}; verified your RDP repository; default branch: {branch}");
 
         // Independent read-only checks run together to keep preflight quick.
         var policyTask = Get("actions/permissions", ct);
@@ -91,13 +96,13 @@ public sealed class GitHubClient : IDisposable
         var runsTask = Get("actions/workflows/main.yml/runs?per_page=100&page=1", ct);
         await Task.WhenAll(policyTask, workflowTask, sourceTask, secretsTask, runsTask);
         if (!(await policyTask).GetProperty("enabled").GetBoolean())
-            throw new InvalidOperationException("Actions are disabled on this fork. Open Actions, enable workflows, and check Settings > Actions > General.");
+            throw new InvalidOperationException("Actions are disabled on this repository. Open Actions, enable workflows, and check Settings > Actions > General.");
         log("PASS · GitHub Actions is enabled");
         if ((await workflowTask).GetProperty("state").GetString() != "active")
-            throw new InvalidOperationException("main.yml is not active. Open the fork's Actions tab and enable the workflow.");
+            throw new InvalidOperationException("main.yml is not active. Open the repository's Actions tab and enable the workflow.");
         var yaml = Encoding.UTF8.GetString(Convert.FromBase64String((await sourceTask).GetProperty("content").GetString()!));
         if (!yaml.Contains("RDP_LAUNCHER_PROTOCOL_V1") || !yaml.Contains("workflow_dispatch:"))
-            throw new InvalidOperationException("Your fork has an older workflow. Sync it with hn24987/RDP or update .github/workflows/main.yml from this release.");
+            throw new InvalidOperationException("Your repository has an older workflow. Update .github/workflows/main.yml from this release.");
         log("PASS · Workflow is active and supports the launcher");
         var names = new HashSet<string>();
         var secrets = await secretsTask;

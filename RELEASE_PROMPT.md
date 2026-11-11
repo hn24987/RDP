@@ -1,8 +1,8 @@
-Write clear, concise GitHub Release notes in English for "RDP Launcher v1.1.0 — Bring Your Own Fork".
+Write clear, concise GitHub Release notes in English for "RDP Launcher v1.1.1 — Source Repository Support".
 
 Use only the facts in README.md and the current implementation. Include:
-- Created by hn24987 and source link https://github.com/hn24987/RDP.
-- The download name RDP-Launcher-v1.1.0-Windows-x64.zip and supported Windows 10/11 x64 platform.
+- Created by hn24987 and source link https://github.com/hn24987/RDP-Launcher.
+- The download name RDP-Launcher-v1.1.1-Windows-x64.zip and supported Windows 10/11 x64 platform.
 - The required first-time flow: fork the source project, enable Actions in the fork, add TAILSCALE_AUTH_KEY and RDP_PASSWORD repository secrets, install/connect Tailscale on the same tailnet, create a GitHub token scoped to the fork, paste the fork URL and click Get RDP.
 - Token permissions: Actions read/write; Contents, Secrets and Administration read-only.
 - Fork verification, parallel preflight, Tailscale installation/login/connection checks, fully English UI, automatic run monitoring and IP retrieval.
@@ -13,3 +13,5 @@ Use only the facts in README.md and the current implementation. Include:
 - Relevant limits: unsigned EXE; temporary sessions/storage; preflight cannot inspect secret values or guarantee quota, billing, key validity, device approval or ACL connectivity.
 
 Use a descriptive title, short introduction, What's new, Quick start, Updating and Notes. Return ready-to-paste Markdown. Never include real tokens, keys, passwords or account-specific settings.
+
+Version 1.1.1 allows hn24987/RDP-Launcher directly when the authenticated user has write access. Other users still use their forks. Do not say that the owner must fork the source repository.

@@ -1,4 +1,4 @@
-name: Publish v1.1.0 release
+name: Publish v1.1.1 release
 on:
   push:
     branches: [main]
@@ -7,11 +7,11 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: publish-v1.1.0
+  group: publish-v1.1.1
   cancel-in-progress: false
 jobs:
   build:
-    if: github.repository == 'hn24987/RDP' && github.ref == 'refs/heads/main'
+    if: github.repository == 'hn24987/RDP-Launcher' && github.ref == 'refs/heads/main'
     runs-on: windows-latest
     timeout-minutes: 15
     steps:
@@ -32,17 +32,17 @@ jobs:
           New-Item -ItemType Directory dist | Out-Null
           Copy-Item README.md, RELEASE_NOTES.md, RELEASE_PROMPT.md app/
           Copy-Item .github/workflows/main.yml app/main.yml
-          Compress-Archive -Path app/* -DestinationPath dist/RDP-Launcher-v1.1.0-Windows-x64.zip
+          Compress-Archive -Path app/* -DestinationPath dist/RDP-Launcher-v1.1.1-Windows-x64.zip
           Copy-Item app/RdpLauncher.exe dist/RdpLauncher.exe
           Copy-Item RELEASE_PROMPT.md dist/RELEASE_PROMPT.md
-          $checksums = foreach ($file in @('RdpLauncher.exe', 'RDP-Launcher-v1.1.0-Windows-x64.zip')) {
+          $checksums = foreach ($file in @('RdpLauncher.exe', 'RDP-Launcher-v1.1.1-Windows-x64.zip')) {
             $hash = (Get-FileHash "dist/$file" -Algorithm SHA256).Hash.ToLower()
             "$hash  $file"
           }
           $checksums | Set-Content dist/SHA256.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: release-assets-v1.1.0
+          name: release-assets-v1.1.1
           path: dist/*
           if-no-files-found: error
   publish:
@@ -55,13 +55,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: release-assets-v1.1.0
+          name: release-assets-v1.1.1
           path: dist
       - name: Create draft, upload assets, then publish
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: v1.1.0
+          RELEASE_TAG: v1.1.1
         shell: bash
         run: |
           set -euo pipefail
@@ -76,9 +76,9 @@ jobs:
             test "$(jq -r '.targetCommitish' release-state.json)" = "$GITHUB_SHA"
           else
             gh release create "$RELEASE_TAG" --draft --target "$GITHUB_SHA" \
-              --title 'RDP Launcher v1.1.0 — Bring Your Own Fork' --notes-file RELEASE_NOTES.md
+              --title 'RDP Launcher v1.1.1 — Source Repository Support' --notes-file RELEASE_NOTES.md
           fi
           gh release upload "$RELEASE_TAG" dist/RdpLauncher.exe \
-            dist/RDP-Launcher-v1.1.0-Windows-x64.zip dist/SHA256.txt dist/RELEASE_PROMPT.md --clobber
+            dist/RDP-Launcher-v1.1.1-Windows-x64.zip dist/SHA256.txt dist/RELEASE_PROMPT.md --clobber
           gh release edit "$RELEASE_TAG" --draft=false --latest
           gh release view "$RELEASE_TAG" --json url --jq '.url' >> "$GITHUB_STEP_SUMMARY"

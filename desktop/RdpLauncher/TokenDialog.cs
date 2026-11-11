@@ -18,7 +18,7 @@ public sealed class TokenDialog : Form
         Font = new Font("Segoe UI", 10);
         var panel = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(20), ColumnCount = 1, RowCount = 7 };
         panel.Controls.Add(new Label { Text = "Connect your GitHub account", Font = new Font("Segoe UI", 16, FontStyle.Bold), AutoSize = true });
-        panel.Controls.Add(new Label { Text = "Create a fine-grained personal access token for YOUR fork.\nRepository permissions: Actions — Read and write; Contents, Secrets, Administration — Read-only. Metadata is automatic.", AutoSize = true, MaximumSize = new Size(580, 0) });
+        panel.Controls.Add(new Label { Text = "Create a fine-grained personal access token for the repository you will run.\nOwners can select hn24987/RDP directly.\nRepository permissions: Actions — Read and write; Contents, Secrets, Administration — Read-only. Metadata is automatic.", AutoSize = true, MaximumSize = new Size(580, 0) });
         var link = new LinkLabel { Text = "Create a GitHub token", AutoSize = true };
         link.LinkClicked += (_, _) => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("https://github.com/settings/personal-access-tokens/new") { UseShellExecute = true });
         panel.Controls.Add(link);

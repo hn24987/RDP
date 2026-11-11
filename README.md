@@ -8,7 +8,7 @@ Create a Windows desktop on GitHub Actions, access it through Tailscale, and con
 
 **Created by [hn24987](https://github.com/hn24987)**
 
-[**Download for Windows**](https://github.com/hn24987/RDP/releases/latest/download/RdpLauncher.exe) · [Latest release](https://github.com/hn24987/RDP/releases/latest) · [Setup guide](docs/SETUP.md)
+[**Download for Windows**](https://github.com/hn24987/RDP-Launcher/releases/latest/download/RdpLauncher.exe) · [Latest release](https://github.com/hn24987/RDP-Launcher/releases/latest) · [Setup guide](docs/SETUP.md)
 
 **Windows 10 / 11 · x64 · English interface · No installer required**
 
@@ -47,7 +47,7 @@ Your own computer runs the launcher and the Remote Desktop client. The remote Wi
 
 ## What does RDP Launcher do?
 
-RDP Launcher is the Windows app that manages this process. Once you have prepared **your own fork**, you can press **Get RDP** to check your setup, start the workflow, follow its progress, and get the remote machine's IP address.
+RDP Launcher is the Windows app that manages this process. Once you have prepared **a repository you control**, you can press **Get RDP** to check your setup, start the workflow, follow its progress, and get the remote machine's IP address.
 
 When the machine is ready, click **Open Remote Desktop** and sign in. The launcher also helps you return to an existing session or stop its workflow when you finish.
 
@@ -63,13 +63,15 @@ When the machine is ready, click **Open Remote Desktop** and sign in. The launch
 
 ### 1. Download the app
 
-**[Download RdpLauncher.exe](https://github.com/hn24987/RDP/releases/latest/download/RdpLauncher.exe)** and place it in a folder you can write to, such as a new folder in Downloads. Open it to get started. You do not need to install Python or .NET.
+**[Download RdpLauncher.exe](https://github.com/hn24987/RDP-Launcher/releases/latest/download/RdpLauncher.exe)** and place it in a folder you can write to, such as a new folder in Downloads. Open it to get started. You do not need to install Python or .NET.
 
-Want the app together with instructions and the workflow file? Get the **[complete ZIP from Releases](https://github.com/hn24987/RDP/releases/latest)**.
+Want the app together with instructions and the workflow file? Get the **[complete ZIP from Releases](https://github.com/hn24987/RDP-Launcher/releases/latest)**.
 
-### 2. Prepare your fork — once
+### 2. Prepare your repository — once
 
-**[Fork this project](https://github.com/hn24987/RDP/fork)** into your GitHub account, then set up:
+**Project owner:** use `https://github.com/hn24987/RDP-Launcher` directly with a GitHub token that has access to it. You do not need to fork your own project.
+
+**Other users:** [fork this project](https://github.com/hn24987/RDP-Launcher/fork) into your account. Then set up the following in the repository you will run:
 
 | What you need | What it does |
 | --- | --- |
@@ -81,12 +83,12 @@ Want the app together with instructions and the workflow file? Get the **[comple
 
 **New here? Follow the [step-by-step setup guide](docs/SETUP.md#first-time-setup).** It shows where to create each key, which token permissions to choose, and where to add your secrets.
 
-> Use **your fork's URL** in the app, such as `https://github.com/YOUR-USERNAME/RDP`. GitHub does not copy secrets when you fork, so you must add your own. Both devices need to use the same Tailscale network.
+> Use the **source repository URL (with write access) or your fork URL** in the app, such as `https://github.com/YOUR-USERNAME/RDP`. GitHub does not copy secrets when you fork, so you must add your own. Both devices need to use the same Tailscale network.
 
 ### 3. Get your RDP session
 
 1. Open `RdpLauncher.exe` and enter your GitHub token when prompted on the first launch.
-2. Paste **your fork URL**, choose a session duration, and click **Get RDP**.
+2. Paste **your repository URL**, choose a session duration, and click **Get RDP**.
 3. Wait for the IP, then click **Open Remote Desktop**.
 4. Sign in as **`.\RDP`** using the password you saved in **`RDP_PASSWORD`**.
 
@@ -105,6 +107,6 @@ Sessions last **10–300 minutes**, depending on your selection. The remote mach
 - [Token storage and privacy](docs/SETUP.md#token-storage)
 - [Build from source](docs/SETUP.md#build-from-source)
 - [Release notes](RELEASE_NOTES.md)
-- [Report an issue](https://github.com/hn24987/RDP/issues)
+- [Report an issue](https://github.com/hn24987/RDP-Launcher/issues)
 
 Use this project for testing in accordance with GitHub Actions and Tailscale terms.

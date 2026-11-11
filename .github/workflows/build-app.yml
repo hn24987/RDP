@@ -32,9 +32,9 @@ jobs:
           Copy-Item .github/workflows/main.yml artifacts/main.yml
           $hash = (Get-FileHash artifacts/RdpLauncher.exe -Algorithm SHA256).Hash.ToLower()
           "$hash  RdpLauncher.exe" | Set-Content artifacts/SHA256.txt
-          Compress-Archive -Path artifacts/* -DestinationPath RDP-Launcher-v1.1.0-Windows-x64.zip
+          Compress-Archive -Path artifacts/* -DestinationPath RDP-Launcher-v1.1.1-Windows-x64.zip
       - uses: actions/upload-artifact@v4
         with:
           name: RdpLauncher-win-x64
-          path: RDP-Launcher-v1.1.0-Windows-x64.zip
+          path: RDP-Launcher-v1.1.1-Windows-x64.zip
           if-no-files-found: error

@@ -1,0 +1,29 @@
+name: Capture released Windows UI
+on:
+  push:
+    branches: [codex/ui-capture-v1.2]
+    paths: ['tools/UiCapture/**', '.github/workflows/capture-ui.yml']
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - run: dotnet run --project tools/UiCapture/UiCapture.csproj
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RdpLauncher-v1.2.0-UI
+          path: ui-shots/*.png
+      - name: Save non-sensitive UI images on the capture branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ui-shots/*.png
+          git commit -m "Add native WinForms UI renders for v1.2.0"
+          git push origin HEAD:codex/ui-capture-v1.2

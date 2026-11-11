@@ -2,7 +2,7 @@
 
 # RDP Launcher
 
-### Connect to a temporary Windows computer from your own PC.
+### Connect to a cloud Windows computer from your own PC.
 
 Create a Windows desktop on GitHub Actions, access it through Tailscale, and control it using Remote Desktop. RDP Launcher helps you set up the connection and start each session.
 
@@ -24,7 +24,7 @@ The applications run on the **remote computer**. Your PC sends your keyboard and
 
 ## What can you use this project for?
 
-This project gives you a **temporary Windows environment** for short learning, development, and testing sessions. For example, you can:
+This project gives you a **cloud Windows environment** for short learning, development, and testing sessions. For example, you can:
 
 - **Test Windows applications and scripts** in a fresh environment without changing your own Windows installation.
 - **Check Windows-specific behavior**, such as file paths, command-line tools, and application compatibility.
@@ -109,4 +109,14 @@ Sessions last **10–300 minutes**, depending on your selection. The remote mach
 - [Release notes](RELEASE_NOTES.md)
 - [Report an issue](https://github.com/hn24987/RDP-Launcher/issues)
 
-Use this project for testing in accordance with GitHub Actions and Tailscale terms.
+## Disclaimer
+
+**This project is intended for educational, development, and testing purposes only.**
+
+Please use this project responsibly and **do not abuse GitHub Actions resources**. Avoid using it to run bots, automated services, mass-created virtual environments, or other resource-intensive tasks unrelated to learning and development.
+
+This project is not intended to provide free, unlimited cloud computing resources or bypass GitHub's usage limits and restrictions.
+
+Misuse may result in workflow restrictions, account suspension, or other enforcement actions by GitHub.
+
+**Always comply with GitHub's Terms of Service and Acceptable Use Policies.** The author is not responsible for any misuse of this project.

@@ -1,18 +1,24 @@
-# RDP Launcher v1.1.1 — Source repository support
+# RDP Launcher v1.2.0 — Session tools and two languages
 
 Created by **hn24987** · https://github.com/hn24987/RDP-Launcher
 
-## Fixed
+## Added
 
-- The project owner can now run `hn24987/RDP-Launcher` directly. Forking your own project is no longer required.
-- Forks of this project remain supported. Both source and fork access require write permission, enabled Actions and the required secrets.
-- Repository URL labels and first-run guidance explain both options.
-- Manual GitHub Actions runs can leave the session ID blank; the workflow supplies one automatically and prints connection information in the log.
+- **Check for updates** checks the latest stable GitHub release, compares numeric versions and offers to open its release page. Updates are never downloaded or executed automatically.
+- **Session countdown** shows the expected remaining time and alerts at 10 and 5 minutes with a popup and sound. Keep the launcher open to receive reminders. Resuming the same run preserves notifications even if a refresh fails.
+- **Receive files** retrieves this PC's Tailscale/Taildrop inbox into a chosen local folder. Send selected files from the remote desktop first. Same-owner and Taildrop device restrictions apply. This does not browse the remote filesystem or back up files automatically; Windows Tailscale may already save incoming files to Downloads.
+- **Settings → Language** switches between English and Tiếng Việt immediately and remembers the choice. App strings live in `.resx` resources; existing log entries and external CLI messages retain their original language.
+- Native **win-arm64** packages alongside **win-x64** packages. ARM64 binaries are cross-compiled and their PE architecture is checked; native ARM64 execution still needs device validation.
 
-## Download and update
+## Build and community
 
-Download **RdpLauncher.exe** or **RDP-Launcher-v1.1.1-Windows-x64.zip** from this release. Close the old launcher and replace its EXE in the same folder; the existing encrypted token file stays there. In the app, enter your repository URL. Owners can enter `https://github.com/hn24987/RDP-Launcher` and select that repository when creating the token.
+- Build versions come from `.csproj` or a matching version tag; ZIP filenames follow the version automatically.
+- Both architectures include documentation and the MIT license. Releases include architecture-specific EXEs and SHA256 checksums; `RdpLauncher.exe` remains the x64 alias.
+- MIT LICENSE, CI/release/license badges, contribution guide and YAML issue forms for bugs/setup help.
+- SmartScreen documentation explains how to verify the official source/checksum and use More info → Run anyway when available. The EXE remains unsigned; no security settings need to be disabled.
 
-Your repository still needs `TAILSCALE_AUTH_KEY` and `RDP_PASSWORD`. The latter must have at least 14 characters, uppercase, lowercase, a digit and a symbol. Tokens need Actions read/write and Contents, Secrets and Administration read permissions. Tailscale must be installed and connected to the same tailnet as the runner.
+The RDP workflow now uses the same expiry timestamp for connection metadata and session shutdown. Manual runs, source repository access and encrypted token storage remain supported. Existing repository secrets are still required.
 
-The automated workflow builds on Windows, runs the contract tests and the DPAPI persistence smoke test, and verifies release asset checksums before publishing. Interactive UI use and live RDP login still need an end-to-end check. The EXE is unsigned.
+## Verification scope
+
+Automated checks cover repository access rules, release metadata/version parsing, notification thresholds, Taildrop literal arguments, language resources, Windows UI construction and DPAPI token storage. Interactive expiry popup/audio, live Taildrop transfers and live RDP login still need validation with configured devices. ARM64 builds are not executed on x64 runners.

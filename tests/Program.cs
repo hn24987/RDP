@@ -93,7 +93,7 @@ await AsyncTest("download and validate ready artifact while job is still running
     Assert(info?.Ip == "100.88.1.2" && calls == 2);
 });
 Test("normalize full fork URL", () => Assert(RepositoryAddress.Parse(" https://github.com/alice/RDP.git/ ") == "alice/RDP"));
-Test("accept source repository URL", () => Assert(RepositoryAddress.Parse("https://github.com/HN24987/rdp") == "HN24987/rdp"));
+Test("accept source repository URL", () => Assert(RepositoryAddress.Parse("https://github.com/HN24987/rdp") == RepositoryAddress.Source));
 Test("reject non-GitHub host", () => Reject(() => RepositoryAddress.Parse("https://github.com.evil.test/alice/RDP")));
 Test("reject URL credentials", () => Reject(() => RepositoryAddress.Parse("https://token@github.com/alice/RDP")));
 Test("reject plain owner/repo", () => Reject(() => RepositoryAddress.Parse("alice/RDP")));

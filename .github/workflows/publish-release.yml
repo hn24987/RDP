@@ -1,52 +1,82 @@
-name: Publish v1.1.1 release
+name: Publish release
 on:
   push:
+    tags: ['v*']
     branches: [main]
-    paths: ['.github/workflows/publish-release.yml']
+    paths: ['.github/release-request']
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: publish-v1.1.1
+  group: publish-${{ github.ref }}
   cancel-in-progress: false
 jobs:
-  build:
-    if: github.repository == 'hn24987/RDP-Launcher' && github.ref == 'refs/heads/main'
+  version:
+    if: github.repository == 'hn24987/RDP-Launcher' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
     runs-on: windows-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve and validate release version
+        id: version
+        shell: pwsh
+        run: |
+          ./scripts/Get-BuildVersion.ps1 -GithubOutput $env:GITHUB_OUTPUT
+          if ($env:GITHUB_EVENT_NAME -eq 'push' -and $env:GITHUB_REF -eq 'refs/heads/main') {
+            . ./scripts/Get-BuildVersion.ps1
+            $version = (Resolve-BuildVersion -ProjectPath ./desktop/RdpLauncher/RdpLauncher.csproj).Version
+            $requested = (Get-Content .github/release-request -Raw).Trim()
+            if ($requested -cne $version) { throw 'Release request must match the project version.' }
+          }
+  build:
+    name: Build ${{ matrix.runtime }}
+    needs: version
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime: [win-x64, win-arm64]
+    runs-on: windows-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - name: Run contract tests
-        run: dotnet run --project tests/ContractTests.csproj
-      - name: Test Windows token persistence
-        run: dotnet run --project tests/WindowsTokenTests/WindowsTokenTests.csproj
-      - name: Build standalone EXE
-        run: dotnet publish desktop/RdpLauncher/RdpLauncher.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=None -o app
-      - name: Package release assets
+      - name: Test version resolution
+        if: matrix.runtime == 'win-x64'
         shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          New-Item -ItemType Directory dist | Out-Null
-          Copy-Item README.md, RELEASE_NOTES.md, RELEASE_PROMPT.md app/
-          Copy-Item .github/workflows/main.yml app/main.yml
-          Compress-Archive -Path app/* -DestinationPath dist/RDP-Launcher-v1.1.1-Windows-x64.zip
-          Copy-Item app/RdpLauncher.exe dist/RdpLauncher.exe
-          Copy-Item RELEASE_PROMPT.md dist/RELEASE_PROMPT.md
-          $checksums = foreach ($file in @('RdpLauncher.exe', 'RDP-Launcher-v1.1.1-Windows-x64.zip')) {
-            $hash = (Get-FileHash "dist/$file" -Algorithm SHA256).Hash.ToLower()
-            "$hash  $file"
-          }
-          $checksums | Set-Content dist/SHA256.txt
+        run: ./scripts/Test-BuildVersion.ps1
+      - name: Run contract tests on Windows x64
+        if: matrix.runtime == 'win-x64'
+        run: dotnet run --project tests/ContractTests.csproj
+      - name: Run feature tests on Windows x64
+        if: matrix.runtime == 'win-x64'
+        run: dotnet run --project tests/FeatureTests/FeatureTests.csproj
+      - name: Test English and Vietnamese resources
+        if: matrix.runtime == 'win-x64'
+        run: dotnet run --project tests/LocalizationTests/LocalizationTests.csproj
+      - name: Test Windows UI on x64
+        if: matrix.runtime == 'win-x64'
+        run: dotnet run --project tests/WindowsUiTests/WindowsUiTests.csproj
+      - name: Test Windows token persistence on x64
+        if: matrix.runtime == 'win-x64'
+        run: dotnet run --project tests/WindowsTokenTests/WindowsTokenTests.csproj
+      - name: Build and package
+        shell: pwsh
+        run: ./scripts/Build-Package.ps1 -Runtime '${{ matrix.runtime }}'
       - uses: actions/upload-artifact@v4
         with:
-          name: release-assets-v1.1.1
-          path: dist/*
+          name: release-${{ needs.version.outputs.version }}-${{ matrix.runtime }}
+          path: dist/${{ matrix.runtime }}/*
           if-no-files-found: error
   publish:
-    needs: build
+    needs: [version, build]
+    concurrency:
+      group: release-${{ needs.version.outputs.tag }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -55,17 +85,20 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: release-assets-v1.1.1
+          pattern: release-${{ needs.version.outputs.version }}-win-*
+          merge-multiple: true
           path: dist
-      - name: Create draft, upload assets, then publish
+      - name: Verify, upload to a draft, then publish
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: v1.1.1
+          RELEASE_TAG: ${{ needs.version.outputs.tag }}
+          RELEASE_VERSION: ${{ needs.version.outputs.version }}
         shell: bash
         run: |
           set -euo pipefail
           cd dist
+          cat SHA256-win-*.txt > SHA256.txt
           sha256sum --check SHA256.txt
           cd ..
           if gh release view "$RELEASE_TAG" --json isDraft,targetCommitish,url > release-state.json 2>/dev/null; then
@@ -76,9 +109,14 @@ jobs:
             test "$(jq -r '.targetCommitish' release-state.json)" = "$GITHUB_SHA"
           else
             gh release create "$RELEASE_TAG" --draft --target "$GITHUB_SHA" \
-              --title 'RDP Launcher v1.1.1 — Source Repository Support' --notes-file RELEASE_NOTES.md
+              --title "RDP Launcher $RELEASE_TAG" --notes-file RELEASE_NOTES.md
           fi
-          gh release upload "$RELEASE_TAG" dist/RdpLauncher.exe \
-            dist/RDP-Launcher-v1.1.1-Windows-x64.zip dist/SHA256.txt dist/RELEASE_PROMPT.md --clobber
-          gh release edit "$RELEASE_TAG" --draft=false --latest
+          cp RELEASE_PROMPT.md dist/RELEASE_PROMPT.md
+          gh release upload "$RELEASE_TAG" dist/RdpLauncher*.exe dist/RDP-Launcher-*.zip \
+            dist/SHA256.txt dist/RELEASE_PROMPT.md --clobber
+          if [[ "$RELEASE_VERSION" == *-* ]]; then
+            gh release edit "$RELEASE_TAG" --draft=false --prerelease --latest=false
+          else
+            gh release edit "$RELEASE_TAG" --draft=false --prerelease=false --latest
+          fi
           gh release view "$RELEASE_TAG" --json url --jq '.url' >> "$GITHUB_STEP_SUMMARY"

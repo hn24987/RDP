@@ -8,9 +8,15 @@ Create a Windows desktop on GitHub Actions, access it through Tailscale, and con
 
 **Created by [hn24987](https://github.com/hn24987)**
 
+[![Windows build](https://github.com/hn24987/RDP-Launcher/actions/workflows/build-app.yml/badge.svg)](https://github.com/hn24987/RDP-Launcher/actions/workflows/build-app.yml)
+[![Latest release](https://img.shields.io/github/v/release/hn24987/RDP-Launcher)](https://github.com/hn24987/RDP-Launcher/releases/latest)
+[![License: MIT](https://img.shields.io/github/license/hn24987/RDP-Launcher)](LICENSE)
+
 [**Download for Windows**](https://github.com/hn24987/RDP-Launcher/releases/latest/download/RdpLauncher.exe) · [Latest release](https://github.com/hn24987/RDP-Launcher/releases/latest) · [Setup guide](docs/SETUP.md)
 
-**Windows 10 / 11 · x64 · English interface · No installer required**
+**Windows 10 / 11 · x64 & ARM64 builds · English / Tiếng Việt · No installer required**
+
+The features below describe the current source. Older release downloads may not yet include ARM64, language settings, countdown reminders or file reception; use a build artifact from the matching source or a release that includes them.
 
 </div>
 
@@ -57,7 +63,9 @@ When the machine is ready, click **Open Remote Desktop** and sign in. The launch
 - **Checks before startup.** Find missing secrets, disabled workflows, or GitHub access problems before starting a session.
 - **Tailscale readiness checks.** See whether Tailscale is installed, signed in, connected, and online.
 - **Your setup, remembered.** Your fork and session details are saved. Your GitHub token is encrypted for your Windows account and loaded on the next launch.
-- **Session controls.** Choose a duration, resume monitoring an existing run, or stop the workflow when you finish.
+- **Session controls.** Choose a duration, resume monitoring an existing run, or stop the workflow when you finish. Countdown reminders at 10 and 5 minutes help you remember to save your work.
+- **Receive your files.** Send selected remote files with Tailscale Taildrop, then receive them into a local folder from the app.
+- **Updates and language settings.** Check for a newer release and choose English or Tiếng Việt in Settings.
 
 ## Get started
 
@@ -65,11 +73,13 @@ When the machine is ready, click **Open Remote Desktop** and sign in. The launch
 
 **[Download RdpLauncher.exe](https://github.com/hn24987/RDP-Launcher/releases/latest/download/RdpLauncher.exe)** and place it in a folder you can write to, such as a new folder in Downloads. Open it to get started. You do not need to install Python or .NET.
 
+For an ARM-based Windows PC, select the **win-arm64** download on the release page; the plain `RdpLauncher.exe` download remains the x64 option.
+
 Want the app together with instructions and the workflow file? Get the **[complete ZIP from Releases](https://github.com/hn24987/RDP-Launcher/releases/latest)**.
 
 ### 2. Prepare your repository — once
 
-**Note:** [fork this project](https://github.com/hn24987/RDP-Launcher/fork) into your account. Then set up the following in the repository you will run:
+**Project owner:** you can use `https://github.com/hn24987/RDP-Launcher` directly with write access. **Other users:** [fork this project](https://github.com/hn24987/RDP-Launcher/fork) into your account. Then set up the following in the repository you will run:
 
 | What you need | What it does |
 | --- | --- |
@@ -96,6 +106,8 @@ After the initial setup, the app remembers your token and fork. You can also use
 
 Click **Stop workflow** to end the remote session. Closing the app or choosing **Stop monitoring** leaves the workflow running; use **Resume run** if you want to return to it.
 
+Use the 10-minute and 5-minute reminders to save your work. To move files home, follow the [Taildrop transfer steps](docs/SETUP.md#receive-files-with-taildrop) before the runner ends. Reminders require the launcher to remain open and the session to be monitored.
+
 Sessions last **10–300 minutes**, depending on your selection. The remote machine and its files are temporary, so save anything you need before the session ends. Runner availability and usage depend on your GitHub account's limits and policies.
 
 ## Need a hand?
@@ -104,6 +116,8 @@ Sessions last **10–300 minutes**, depending on your selection. The remote mach
 - [Troubleshooting](docs/SETUP.md#troubleshooting)
 - [Token storage and privacy](docs/SETUP.md#token-storage)
 - [Build from source](docs/SETUP.md#build-from-source)
+- [Contribute a change](CONTRIBUTING.md)
+- [Verify a download / SmartScreen](docs/SETUP.md#verify-your-download-and-smartscreen)
 - [Release notes](RELEASE_NOTES.md)
 - [Report an issue](https://github.com/hn24987/RDP-Launcher/issues)
 
@@ -118,3 +132,7 @@ This project is not intended to provide free, unlimited cloud computing resource
 Misuse may result in workflow restrictions, account suspension, or other enforcement actions by GitHub.
 
 **Always comply with GitHub's Terms of Service and Acceptable Use Policies.** The author is not responsible for any misuse of this project.
+
+## License
+
+[MIT License](LICENSE) · Copyright © 2026 hn24987.

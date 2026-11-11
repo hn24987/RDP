@@ -2,39 +2,60 @@ name: Build Windows app
 on:
   pull_request:
     paths:
-      - "desktop/**"
-      - "tests/**"
-      - ".github/workflows/build-app.yml"
-      - "README.md"
-      - "RELEASE_*.md"
+      - 'desktop/**'
+      - 'tests/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+      - 'README.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - 'CONTRIBUTING.md'
+      - 'RELEASE_*.md'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   build:
+    name: Build ${{ matrix.runtime }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime: [win-x64, win-arm64]
     runs-on: windows-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - name: Run contract tests
-        run: dotnet run --project tests/ContractTests.csproj
-      - name: Test Windows token persistence
-        run: dotnet run --project tests/WindowsTokenTests/WindowsTokenTests.csproj
-      - name: Build standalone EXE
-        run: dotnet publish desktop/RdpLauncher/RdpLauncher.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=None -o artifacts
-      - name: Package download
+      - name: Resolve version
+        id: version
         shell: pwsh
-        run: |
-          Copy-Item README.md, RELEASE_NOTES.md, RELEASE_PROMPT.md artifacts/
-          Copy-Item .github/workflows/main.yml artifacts/main.yml
-          $hash = (Get-FileHash artifacts/RdpLauncher.exe -Algorithm SHA256).Hash.ToLower()
-          "$hash  RdpLauncher.exe" | Set-Content artifacts/SHA256.txt
-          Compress-Archive -Path artifacts/* -DestinationPath RDP-Launcher-v1.1.1-Windows-x64.zip
+        run: ./scripts/Get-BuildVersion.ps1 -GithubOutput $env:GITHUB_OUTPUT
+      - name: Test version resolution
+        if: matrix.runtime == 'win-x64'
+        shell: pwsh
+        run: ./scripts/Test-BuildVersion.ps1
+      - name: Run contract tests on Windows x64
+        if: matrix.runtime == 'win-x64'
+        run: dotnet run --project tests/ContractTests.csproj
+      - name: Run feature tests on Windows x64
+        if: matrix.runtime == 'win-x64'
+        run: dotnet run --project tests/FeatureTests/FeatureTests.csproj
+      - name: Test English and Vietnamese resources
+        if: matrix.runtime == 'win-x64'
+        run: dotnet run --project tests/LocalizationTests/LocalizationTests.csproj
+      - name: Test Windows UI on x64
+        if: matrix.runtime == 'win-x64'
+        run: dotnet run --project tests/WindowsUiTests/WindowsUiTests.csproj
+      - name: Test Windows token persistence on x64
+        if: matrix.runtime == 'win-x64'
+        run: dotnet run --project tests/WindowsTokenTests/WindowsTokenTests.csproj
+      - name: Build and package
+        shell: pwsh
+        run: ./scripts/Build-Package.ps1 -Runtime '${{ matrix.runtime }}'
       - uses: actions/upload-artifact@v4
         with:
-          name: RdpLauncher-win-x64
-          path: RDP-Launcher-v1.1.1-Windows-x64.zip
+          name: RdpLauncher-${{ matrix.runtime }}-v${{ steps.version.outputs.version }}
+          path: dist/${{ matrix.runtime }}/*
           if-no-files-found: error

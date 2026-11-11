@@ -6,7 +6,7 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.1.1</Version>
+    <Version>1.2.0</Version>
     <Authors>hn24987</Authors>
     <Description>RDP Launcher — Created by hn24987</Description>
     <ApplicationManifest>app.manifest</ApplicationManifest>

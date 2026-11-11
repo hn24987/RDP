@@ -1,0 +1,602 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="&#10;[output truncated]" xml:space="preserve">
+    <value>
+[output truncated]</value>
+  </data>
+  <data name="10 minutes remaining" xml:space="preserve">
+    <value>10 minutes remaining</value>
+  </data>
+  <data name="5 minutes remaining" xml:space="preserve">
+    <value>5 minutes remaining</value>
+  </data>
+  <data name="A previous session is saved. Use Resume run first. After it ends, clear Run ID before starting a new session." xml:space="preserve">
+    <value>A previous session is saved. Use Resume run first. After it ends, clear Run ID before starting a new session.</value>
+  </data>
+  <data name="Actions / logs" xml:space="preserve">
+    <value>Actions / logs</value>
+  </data>
+  <data name="Actions are disabled on this repository. Open Actions, enable workflows, and check Settings &gt; Actions &gt; General." xml:space="preserve">
+    <value>Actions are disabled on this repository. Open Actions, enable workflows, and check Settings &gt; Actions &gt; General.</value>
+  </data>
+  <data name="Add / change token" xml:space="preserve">
+    <value>Add / change token</value>
+  </data>
+  <data name="Artifact exceeds the allowed size." xml:space="preserve">
+    <value>Artifact exceeds the allowed size.</value>
+  </data>
+  <data name="Artifact is missing connection.json." xml:space="preserve">
+    <value>Artifact is missing connection.json.</value>
+  </data>
+  <data name="Auth Keys" xml:space="preserve">
+    <value>Auth Keys</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Cannot save beside the EXE. Move the app to a writable folder, then try again." xml:space="preserve">
+    <value>Cannot save beside the EXE. Move the app to a writable folder, then try again.</value>
+  </data>
+  <data name="Check for updates" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="Check setup" xml:space="preserve">
+    <value>Check setup</value>
+  </data>
+  <data name="Check the branch, workflow_dispatch, and workflow inputs." xml:space="preserve">
+    <value>Check the branch, workflow_dispatch, and workflow inputs.</value>
+  </data>
+  <data name="Check token permissions, organization approval/SSO, Actions policy, or API rate limits." xml:space="preserve">
+    <value>Check token permissions, organization approval/SSO, Actions policy, or API rate limits.</value>
+  </data>
+  <data name="Checking GitHub authentication and repository…" xml:space="preserve">
+    <value>Checking GitHub authentication and repository…</value>
+  </data>
+  <data name="Checking for updates…" xml:space="preserve">
+    <value>Checking for updates…</value>
+  </data>
+  <data name="Checking local Tailscale and your repository in parallel…" xml:space="preserve">
+    <value>Checking local Tailscale and your repository in parallel…</value>
+  </data>
+  <data name="Choose a folder for files received from your RDP machine." xml:space="preserve">
+    <value>Choose a folder for files received from your RDP machine.</value>
+  </data>
+  <data name="Choose a folder for received files" xml:space="preserve">
+    <value>Choose a folder for received files</value>
+  </data>
+  <data name="Choose an absolute Tailscale executable path." xml:space="preserve">
+    <value>Choose an absolute Tailscale executable path.</value>
+  </data>
+  <data name="Choose an absolute destination folder path." xml:space="preserve">
+    <value>Choose an absolute destination folder path.</value>
+  </data>
+  <data name="Click Add / change token to connect your GitHub account first." xml:space="preserve">
+    <value>Click Add / change token to connect your GitHub account first.</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Close this dialog" xml:space="preserve">
+    <value>Close this dialog</value>
+  </data>
+  <data name="Closing the app stops monitoring only. The workflow keeps running; you can resume monitoring later. Close the app?" xml:space="preserve">
+    <value>Closing the app stops monitoring only. The workflow keeps running; you can resume monitoring later. Close the app?</value>
+  </data>
+  <data name="Connect your GitHub account" xml:space="preserve">
+    <value>Connect your GitHub account</value>
+  </data>
+  <data name="Connection artifact does not match this session." xml:space="preserve">
+    <value>Connection artifact does not match this session.</value>
+  </data>
+  <data name="Connection details reflect the last check. Use Resume run to refresh; Stop workflow to end the session." xml:space="preserve">
+    <value>Connection details reflect the last check. Use Resume run to refresh; Stop workflow to end the session.</value>
+  </data>
+  <data name="Copy IP" xml:space="preserve">
+    <value>Copy IP</value>
+  </data>
+  <data name="Could not delete token file: " xml:space="preserve">
+    <value>Could not delete token file: </value>
+  </data>
+  <data name="Could not delete token file: {0}" xml:space="preserve">
+    <value>Could not delete token file: {0}</value>
+  </data>
+  <data name="Could not download artifact: HTTP {0}." xml:space="preserve">
+    <value>Could not download artifact: HTTP {0}.</value>
+  </data>
+  <data name="Could not load the previous session. You can enter a Run ID manually." xml:space="preserve">
+    <value>Could not load the previous session. You can enter a Run ID manually.</value>
+  </data>
+  <data name="Could not open Remote Desktop: " xml:space="preserve">
+    <value>Could not open Remote Desktop: </value>
+  </data>
+  <data name="Could not open Remote Desktop: {0}" xml:space="preserve">
+    <value>Could not open Remote Desktop: {0}</value>
+  </data>
+  <data name="Could not save language preference: " xml:space="preserve">
+    <value>Could not save language preference: </value>
+  </data>
+  <data name="Could not start the Tailscale file receiver." xml:space="preserve">
+    <value>Could not start the Tailscale file receiver.</value>
+  </data>
+  <data name="Create a GitHub token" xml:space="preserve">
+    <value>Create a GitHub token</value>
+  </data>
+  <data name="Create a fine-grained personal access token for the repository you will run.&#10;Owners can select hn24987/RDP-Launcher directly.&#10;Repository permissions: Actions — Read and write; Contents, Secrets, Administration — Read-only. Metadata is automatic." xml:space="preserve">
+    <value>Create a fine-grained personal access token for the repository you will run.
+Owners can select hn24987/RDP-Launcher directly.
+Repository permissions: Actions — Read and write; Contents, Secrets, Administration — Read-only. Metadata is automatic.</value>
+  </data>
+  <data name="Created by hn24987" xml:space="preserve">
+    <value>Created by hn24987</value>
+  </data>
+  <data name="Delete the saved token from this folder?" xml:space="preserve">
+    <value>Delete the saved token from this folder?</value>
+  </data>
+  <data name="Discard saved request" xml:space="preserve">
+    <value>Discard saved request</value>
+  </data>
+  <data name="Dispatching session {0}…" xml:space="preserve">
+    <value>Dispatching session {0}…</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Enter a Run ID to stop." xml:space="preserve">
+    <value>Enter a Run ID to stop.</value>
+  </data>
+  <data name="Enter the Run ID from your GitHub Actions URL: /actions/runs/123456." xml:space="preserve">
+    <value>Enter the Run ID from your GitHub Actions URL: /actions/runs/123456.</value>
+  </data>
+  <data name="Enter your GitHub token." xml:space="preserve">
+    <value>Enter your GitHub token.</value>
+  </data>
+  <data name="Enter your repository URL: https://github.com/YOUR-USERNAME/RDP" xml:space="preserve">
+    <value>Enter your repository URL: https://github.com/YOUR-USERNAME/RDP</value>
+  </data>
+  <data name="Error: " xml:space="preserve">
+    <value>Error: </value>
+  </data>
+  <data name="Error: {0}" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+  <data name="FAIL · " xml:space="preserve">
+    <value>FAIL · </value>
+  </data>
+  <data name="FAIL · {0}" xml:space="preserve">
+    <value>FAIL · {0}</value>
+  </data>
+  <data name="File receive complete." xml:space="preserve">
+    <value>File receive complete.</value>
+  </data>
+  <data name="File retrieval cancelled." xml:space="preserve">
+    <value>File retrieval cancelled.</value>
+  </data>
+  <data name="File retrieval timed out after 30 seconds. Check Tailscale and try receiving again. Files are not uploaded to GitHub." xml:space="preserve">
+    <value>File retrieval timed out after 30 seconds. Check Tailscale and try receiving again. Files are not uploaded to GitHub.</value>
+  </data>
+  <data name="File transfer" xml:space="preserve">
+    <value>File transfer</value>
+  </data>
+  <data name="Files received in {0}." xml:space="preserve">
+    <value>Files received in {0}.</value>
+  </data>
+  <data name="First run: select the source repository (with write access) or your fork. Enable Actions and add TAILSCALE_AUTH_KEY and RDP_PASSWORD. Forks do not inherit secrets." xml:space="preserve">
+    <value>First run: select the source repository (with write access) or your fork. Enable Actions and add TAILSCALE_AUTH_KEY and RDP_PASSWORD. Forks do not inherit secrets.</value>
+  </data>
+  <data name="Forget token" xml:space="preserve">
+    <value>Forget token</value>
+  </data>
+  <data name="Fork this project" xml:space="preserve">
+    <value>Fork this project</value>
+  </data>
+  <data name="Get RDP" xml:space="preserve">
+    <value>Get RDP</value>
+  </data>
+  <data name="Get RDP runs preflight automatically. When ready, open Remote Desktop and sign in as .\RDP with your RDP_PASSWORD secret. Match any certificate prompt to the displayed IP. Closing this app does not stop your workflow. Your token is encrypted and saved beside the EXE." xml:space="preserve">
+    <value>Get RDP runs preflight automatically. When ready, open Remote Desktop and sign in as .\RDP with your RDP_PASSWORD secret. Match any certificate prompt to the displayed IP. Closing this app does not stop your workflow. Your token is encrypted and saved beside the EXE.</value>
+  </data>
+  <data name="GitHub HTTP {0}: {1}" xml:space="preserve">
+    <value>GitHub HTTP {0}: {1}</value>
+  </data>
+  <data name="GitHub accepted the request. Finding your run…" xml:space="preserve">
+    <value>GitHub accepted the request. Finding your run…</value>
+  </data>
+  <data name="GitHub authentication · RDP Launcher" xml:space="preserve">
+    <value>GitHub authentication · RDP Launcher</value>
+  </data>
+  <data name="GitHub request timed out. Try again." xml:space="preserve">
+    <value>GitHub request timed out. Try again.</value>
+  </data>
+  <data name="GitHub returned invalid release metadata." xml:space="preserve">
+    <value>GitHub returned invalid release metadata.</value>
+  </data>
+  <data name="GitHub returned unreadable release metadata." xml:space="preserve">
+    <value>GitHub returned unreadable release metadata.</value>
+  </data>
+  <data name="GitHub token not configured" xml:space="preserve">
+    <value>GitHub token not configured</value>
+  </data>
+  <data name="GitHub token validated and encrypted beside the EXE. Repository permissions are checked during preflight." xml:space="preserve">
+    <value>GitHub token validated and encrypted beside the EXE. Repository permissions are checked during preflight.</value>
+  </data>
+  <data name="IP address is outside the Tailscale range." xml:space="preserve">
+    <value>IP address is outside the Tailscale range.</value>
+  </data>
+  <data name="IP: {0}   ·   User: .\{1}&#10;Expected end: {2:HH:mm dd/MM/yyyy} (your local time)" xml:space="preserve">
+    <value>IP: {0}   ·   User: .\{1}
+Expected end: {2:HH:mm dd/MM/yyyy} (your local time)</value>
+  </data>
+  <data name="IP: {0}   ·   User: .\{1}&#10;Expected end: {2} (your local time)" xml:space="preserve">
+    <value>IP: {0}   ·   User: .\{1}
+Expected end: {2} (your local time)</value>
+  </data>
+  <data name="Install Tailscale" xml:space="preserve">
+    <value>Install Tailscale</value>
+  </data>
+  <data name="Invalid IP address." xml:space="preserve">
+    <value>Invalid IP address.</value>
+  </data>
+  <data name="Invalid RDP username." xml:space="preserve">
+    <value>Invalid RDP username.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Language changes apply immediately. Existing log entries keep their original language." xml:space="preserve">
+    <value>Language changes apply immediately. Existing log entries keep their original language.</value>
+  </data>
+  <data name="Missing repository secrets: {0}. Open Secrets to add them; forked repositories do not inherit secrets." xml:space="preserve">
+    <value>Missing repository secrets: {0}. Open Secrets to add them; forked repositories do not inherit secrets.</value>
+  </data>
+  <data name="Monitoring stopped. The workflow keeps running unless you stop it." xml:space="preserve">
+    <value>Monitoring stopped. The workflow keeps running unless you stop it.</value>
+  </data>
+  <data name="NOTICE · Existing run {0} is {1}. Resume it if you do not need another machine." xml:space="preserve">
+    <value>NOTICE · Existing run {0} is {1}. Resume it if you do not need another machine.</value>
+  </data>
+  <data name="Network request timed out. Use Resume run to avoid creating duplicate sessions." xml:space="preserve">
+    <value>Network request timed out. Use Resume run to avoid creating duplicate sessions.</value>
+  </data>
+  <data name="No RDP session connected." xml:space="preserve">
+    <value>No RDP session connected.</value>
+  </data>
+  <data name="No pending files were reported. Check Downloads if Tailscale already saved them." xml:space="preserve">
+    <value>No pending files were reported. Check Downloads if Tailscale already saved them.</value>
+  </data>
+  <data name="No stable release is available yet." xml:space="preserve">
+    <value>No stable release is available yet.</value>
+  </data>
+  <data name="Open Actions / logs for details. If dispatch may have succeeded, use Resume run instead of creating another session." xml:space="preserve">
+    <value>Open Actions / logs for details. If dispatch may have succeeded, use Resume run instead of creating another session.</value>
+  </data>
+  <data name="Open Remote Desktop" xml:space="preserve">
+    <value>Open Remote Desktop</value>
+  </data>
+  <data name="Open Tailscale" xml:space="preserve">
+    <value>Open Tailscale</value>
+  </data>
+  <data name="Open release page?" xml:space="preserve">
+    <value>Open release page?</value>
+  </data>
+  <data name="PASS · GitHub Actions is enabled" xml:space="preserve">
+    <value>PASS · GitHub Actions is enabled</value>
+  </data>
+  <data name="PASS · Signed in as {0}; verified your RDP repository; default branch: {1}" xml:space="preserve">
+    <value>PASS · Signed in as {0}; verified your RDP repository; default branch: {1}</value>
+  </data>
+  <data name="PASS · TAILSCALE_AUTH_KEY and RDP_PASSWORD exist (values cannot be read back)" xml:space="preserve">
+    <value>PASS · TAILSCALE_AUTH_KEY and RDP_PASSWORD exist (values cannot be read back)</value>
+  </data>
+  <data name="PASS · Tailscale is installed" xml:space="preserve">
+    <value>PASS · Tailscale is installed</value>
+  </data>
+  <data name="PASS · Tailscale service is responding, connected and online. Use the same tailnet as the runner Auth Key." xml:space="preserve">
+    <value>PASS · Tailscale service is responding, connected and online. Use the same tailnet as the runner Auth Key.</value>
+  </data>
+  <data name="PASS · The runner has enabled RDP. Use the password you set in the RDP_PASSWORD secret." xml:space="preserve">
+    <value>PASS · The runner has enabled RDP. Use the password you set in the RDP_PASSWORD secret.</value>
+  </data>
+  <data name="PASS · Workflow is active and supports the launcher" xml:space="preserve">
+    <value>PASS · Workflow is active and supports the launcher</value>
+  </data>
+  <data name="PASS · Workflow runs are readable. GitHub confirms Actions write permission when dispatching." xml:space="preserve">
+    <value>PASS · Workflow runs are readable. GitHub confirms Actions write permission when dispatching.</value>
+  </data>
+  <data name="PASS · Your device can reach TCP 3389. Click Open Remote Desktop." xml:space="preserve">
+    <value>PASS · Your device can reach TCP 3389. Click Open Remote Desktop.</value>
+  </data>
+  <data name="Paste the source repository URL or your fork URL to enable Check setup and Get RDP." xml:space="preserve">
+    <value>Paste the source repository URL or your fork URL to enable Check setup and Get RDP.</value>
+  </data>
+  <data name="Preflight complete. Click Get RDP when ready." xml:space="preserve">
+    <value>Preflight complete. Click Get RDP when ready.</value>
+  </data>
+  <data name="Preflight complete. No workflow has been started." xml:space="preserve">
+    <value>Preflight complete. No workflow has been started.</value>
+  </data>
+  <data name="Preflight failed. Fix the checks above, then try again. No workflow was started." xml:space="preserve">
+    <value>Preflight failed. Fix the checks above, then try again. No workflow was started.</value>
+  </data>
+  <data name="RDP Launcher" xml:space="preserve">
+    <value>RDP Launcher</value>
+  </data>
+  <data name="RDP Launcher v1.1.1 · Created by hn24987" xml:space="preserve">
+    <value>RDP Launcher v1.1.1 · Created by hn24987</value>
+  </data>
+  <data name="RDP Launcher v{0} · Created by hn24987" xml:space="preserve">
+    <value>RDP Launcher v{0} · Created by hn24987</value>
+  </data>
+  <data name="Receive command completed for {0}." xml:space="preserve">
+    <value>Receive command completed for {0}.</value>
+  </data>
+  <data name="Receive files" xml:space="preserve">
+    <value>Receive files</value>
+  </data>
+  <data name="Receive files failed: {0}" xml:space="preserve">
+    <value>Receive files failed: {0}</value>
+  </data>
+  <data name="Receive request completed. Check the selected folder and Downloads if Tailscale already saved incoming files. An empty inbox does not mean files were backed up." xml:space="preserve">
+    <value>Receive request completed. Check the selected folder and Downloads if Tailscale already saved incoming files. An empty inbox does not mean files were backed up.</value>
+  </data>
+  <data name="Receiving files" xml:space="preserve">
+    <value>Receiving files</value>
+  </data>
+  <data name="Remaining: {0}" xml:space="preserve">
+    <value>Remaining: {0}</value>
+  </data>
+  <data name="Repository URL" xml:space="preserve">
+    <value>Repository URL</value>
+  </data>
+  <data name="Repository must use the owner/repo format." xml:space="preserve">
+    <value>Repository must use the owner/repo format.</value>
+  </data>
+  <data name="Repository/workflow not found or your token does not have access. Select the repository when creating the token." xml:space="preserve">
+    <value>Repository/workflow not found or your token does not have access. Select the repository when creating the token.</value>
+  </data>
+  <data name="Resume run" xml:space="preserve">
+    <value>Resume run</value>
+  </data>
+  <data name="Run ID" xml:space="preserve">
+    <value>Run ID</value>
+  </data>
+  <data name="Run ID: {0}" xml:space="preserve">
+    <value>Run ID: {0}</value>
+  </data>
+  <data name="Run not found yet. Open Actions / logs or use Resume run to search again; do not dispatch again." xml:space="preserve">
+    <value>Run not found yet. Open Actions / logs or use Resume run to search again; do not dispatch again.</value>
+  </data>
+  <data name="Runner availability, billing/quota, Auth Key validity, device approval and ACLs are confirmed only during startup/connection." xml:space="preserve">
+    <value>Runner availability, billing/quota, Auth Key validity, device approval and ACLs are confirmed only during startup/connection.</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Save your files" xml:space="preserve">
+    <value>Save your files</value>
+  </data>
+  <data name="Saved GitHub token loaded" xml:space="preserve">
+    <value>Saved GitHub token loaded</value>
+  </data>
+  <data name="Secrets" xml:space="preserve">
+    <value>Secrets</value>
+  </data>
+  <data name="Select your preferred language. Changes apply immediately." xml:space="preserve">
+    <value>Select your preferred language. Changes apply immediately.</value>
+  </data>
+  <data name="Send selected files from the remote machine with Tailscale first, then choose a local folder to receive them. Taildrop requires both devices to belong to the same Tailscale user." xml:space="preserve">
+    <value>Send selected files from the remote machine with Tailscale first, then choose a local folder to receive them. Taildrop requires both devices to belong to the same Tailscale user.</value>
+  </data>
+  <data name="Send selected remote files through Taildrop first. This receives this PC's inbox; it does not browse the remote filesystem." xml:space="preserve">
+    <value>Send selected remote files through Taildrop first. This receives this PC's inbox; it does not browse the remote filesystem.</value>
+  </data>
+  <data name="Session (minutes)" xml:space="preserve">
+    <value>Session (minutes)</value>
+  </data>
+  <data name="Session ending soon" xml:space="preserve">
+    <value>Session ending soon</value>
+  </data>
+  <data name="Session ends in {0:hh\:mm\:ss}" xml:space="preserve">
+    <value>Session ends in {0:hh\:mm\:ss}</value>
+  </data>
+  <data name="Session expired" xml:space="preserve">
+    <value>Session expired</value>
+  </data>
+  <data name="Session expired. The remote machine may have stopped. Save files before future sessions end." xml:space="preserve">
+    <value>Session expired. The remote machine may have stopped. Save files before future sessions end.</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Signed in as {0} · token saved" xml:space="preserve">
+    <value>Signed in as {0} · token saved</value>
+  </data>
+  <data name="Source: github.com/hn24987/RDP-Launcher" xml:space="preserve">
+    <value>Source: github.com/hn24987/RDP-Launcher</value>
+  </data>
+  <data name="Stop monitoring" xml:space="preserve">
+    <value>Stop monitoring</value>
+  </data>
+  <data name="Stop requested. Check the final status in Actions / logs." xml:space="preserve">
+    <value>Stop requested. Check the final status in Actions / logs.</value>
+  </data>
+  <data name="Stop session" xml:space="preserve">
+    <value>Stop session</value>
+  </data>
+  <data name="Stop workflow" xml:space="preserve">
+    <value>Stop workflow</value>
+  </data>
+  <data name="Stop workflow {0}? This will disconnect the RDP session." xml:space="preserve">
+    <value>Stop workflow {0}? This will disconnect the RDP session.</value>
+  </data>
+  <data name="TCP 3389 is not reachable yet. Check the tailnet, device approval and ACLs/grants for port 3389. The runner IP is available; retry after fixing access." xml:space="preserve">
+    <value>TCP 3389 is not reachable yet. Check the tailnet, device approval and ACLs/grants for port 3389. The runner IP is available; retry after fixing access.</value>
+  </data>
+  <data name="Tailscale UI not found. Install it first, or open Tailscale from the Windows Start menu." xml:space="preserve">
+    <value>Tailscale UI not found. Install it first, or open Tailscale from the Windows Start menu.</value>
+  </data>
+  <data name="Tailscale could not receive files. Check that both devices are online, owned by the same user, and allowed to use Taildrop." xml:space="preserve">
+    <value>Tailscale could not receive files. Check that both devices are online, owned by the same user, and allowed to use Taildrop.</value>
+  </data>
+  <data name="Tailscale is installed but did not respond within 12 seconds. Open Tailscale and check that its service is running." xml:space="preserve">
+    <value>Tailscale is installed but did not respond within 12 seconds. Open Tailscale and check that its service is running.</value>
+  </data>
+  <data name="Tailscale is installed but its service is unavailable or you are signed out. Open Tailscale, start its service/connect, then retry." xml:space="preserve">
+    <value>Tailscale is installed but its service is unavailable or you are signed out. Open Tailscale, start its service/connect, then retry.</value>
+  </data>
+  <data name="Tailscale is installed but not signed in. Open Tailscale and sign in to the same tailnet as your Auth Key." xml:space="preserve">
+    <value>Tailscale is installed but not signed in. Open Tailscale and sign in to the same tailnet as your Auth Key.</value>
+  </data>
+  <data name="Tailscale is installed but switched off. Open Tailscale, choose Connect, then retry." xml:space="preserve">
+    <value>Tailscale is installed but switched off. Open Tailscale, choose Connect, then retry.</value>
+  </data>
+  <data name="Tailscale is not installed or its CLI could not be found." xml:space="preserve">
+    <value>Tailscale is not installed or its CLI could not be found.</value>
+  </data>
+  <data name="Tailscale is not installed or its CLI could not be found. Click Install Tailscale, install it, and sign in." xml:space="preserve">
+    <value>Tailscale is not installed or its CLI could not be found. Click Install Tailscale, install it, and sign in.</value>
+  </data>
+  <data name="Tailscale is not ready (state: {0}). Open Tailscale, check its service, and connect." xml:space="preserve">
+    <value>Tailscale is not ready (state: {0}). Open Tailscale, check its service, and connect.</value>
+  </data>
+  <data name="Tailscale is running but this device is offline. Check your network and reconnect Tailscale." xml:space="preserve">
+    <value>Tailscale is running but this device is offline. Check your network and reconnect Tailscale.</value>
+  </data>
+  <data name="Tailscale returned an unreadable status. Open Tailscale and check its service/login." xml:space="preserve">
+    <value>Tailscale returned an unreadable status. Open Tailscale and check its service/login.</value>
+  </data>
+  <data name="Target: {0} · write access and project membership will be verified with GitHub." xml:space="preserve">
+    <value>Target: {0} · write access and project membership will be verified with GitHub.</value>
+  </data>
+  <data name="The expected session end has been reached. Check Actions / logs for the actual workflow status." xml:space="preserve">
+    <value>The expected session end has been reached. Check Actions / logs for the actual workflow status.</value>
+  </data>
+  <data name="The latest release does not contain a supported stable version tag." xml:space="preserve">
+    <value>The latest release does not contain a supported stable version tag.</value>
+  </data>
+  <data name="The previous request may already have created a machine. Have you checked Actions and still want to discard the saved request ID?" xml:space="preserve">
+    <value>The previous request may already have created a machine. Have you checked Actions and still want to discard the saved request ID?</value>
+  </data>
+  <data name="The release does not contain a version tag." xml:space="preserve">
+    <value>The release does not contain a version tag.</value>
+  </data>
+  <data name="The release page URL is not a trusted project release URL." xml:space="preserve">
+    <value>The release page URL is not a trusted project release URL.</value>
+  </data>
+  <data name="The saved token cannot be decrypted. Enter it again for this Windows account." xml:space="preserve">
+    <value>The saved token cannot be decrypted. Enter it again for this Windows account.</value>
+  </data>
+  <data name="The selected destination folder no longer exists." xml:space="preserve">
+    <value>The selected destination folder no longer exists.</value>
+  </data>
+  <data name="The token is encrypted for your Windows account and saved as github-token.dat next to this EXE. Next time, it loads automatically. Keep the app in a writable folder. Moving it to another Windows account requires signing in again." xml:space="preserve">
+    <value>The token is encrypted for your Windows account and saved as github-token.dat next to this EXE. Next time, it loads automatically. Keep the app in a writable folder. Moving it to another Windows account requires signing in again.</value>
+  </data>
+  <data name="This RDP session has expired." xml:space="preserve">
+    <value>This RDP session has expired.</value>
+  </data>
+  <data name="This device needs approval. Approve it in the Tailscale admin console, then retry." xml:space="preserve">
+    <value>This device needs approval. Approve it in the Tailscale admin console, then retry.</value>
+  </data>
+  <data name="This fork does not belong to the hn24987/RDP-Launcher fork network." xml:space="preserve">
+    <value>This fork does not belong to the hn24987/RDP-Launcher fork network.</value>
+  </data>
+  <data name="This pending request belongs to a different fork. Restore its fork URL before resuming." xml:space="preserve">
+    <value>This pending request belongs to a different fork. Restore its fork URL before resuming.</value>
+  </data>
+  <data name="This repository is archived. Unarchive it before running workflows." xml:space="preserve">
+    <value>This repository is archived. Unarchive it before running workflows.</value>
+  </data>
+  <data name="This repository is disabled by GitHub." xml:space="preserve">
+    <value>This repository is disabled by GitHub.</value>
+  </data>
+  <data name="This run does not belong to main.yml." xml:space="preserve">
+    <value>This run does not belong to main.yml.</value>
+  </data>
+  <data name="This run has multiple connection artifacts. Refusing to guess the session." xml:space="preserve">
+    <value>This run has multiple connection artifacts. Refusing to guess the session.</value>
+  </data>
+  <data name="Tiếng Việt" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="Update available" xml:space="preserve">
+    <value>Update available</value>
+  </data>
+  <data name="Update check cancelled or timed out." xml:space="preserve">
+    <value>Update check cancelled or timed out.</value>
+  </data>
+  <data name="Update check failed (GitHub HTTP {0}). Check your connection or GitHub API limits and try again." xml:space="preserve">
+    <value>Update check failed (GitHub HTTP {0}). Check your connection or GitHub API limits and try again.</value>
+  </data>
+  <data name="Update check failed: {0}" xml:space="preserve">
+    <value>Update check failed: {0}</value>
+  </data>
+  <data name="Use a repository you control. Owners can use hn24987/RDP-Launcher directly; other users should fork the project. Enable Actions and add the required secrets." xml:space="preserve">
+    <value>Use a repository you control. Owners can use hn24987/RDP-Launcher directly; other users should fork the project. Enable Actions and add the required secrets.</value>
+  </data>
+  <data name="Use hn24987/RDP-Launcher if you have write access, or a fork of that project that you control." xml:space="preserve">
+    <value>Use hn24987/RDP-Launcher if you have write access, or a fork of that project that you control.</value>
+  </data>
+  <data name="Use the repository URL, not an Actions, branch, or file URL." xml:space="preserve">
+    <value>Use the repository URL, not an Actions, branch, or file URL.</value>
+  </data>
+  <data name="Validate and save token" xml:space="preserve">
+    <value>Validate and save token</value>
+  </data>
+  <data name="Validating token with GitHub…" xml:space="preserve">
+    <value>Validating token with GitHub…</value>
+  </data>
+  <data name="Version {0} is available. You are using {1}. Open the release page?" xml:space="preserve">
+    <value>Version {0} is available. You are using {1}. Open the release page?</value>
+  </data>
+  <data name="Waited 25 minutes. Check the queue, quota, billing or approvals in Actions, then use Resume run." xml:space="preserve">
+    <value>Waited 25 minutes. Check the queue, quota, billing or approvals in Actions, then use Resume run.</value>
+  </data>
+  <data name="Workflow ended: {0}. See Actions / logs for details. Clear Run ID to start a new session." xml:space="preserve">
+    <value>Workflow ended: {0}. See Actions / logs for details. Clear Run ID to start a new session.</value>
+  </data>
+  <data name="Workflow: {0}" xml:space="preserve">
+    <value>Workflow: {0}</value>
+  </data>
+  <data name="You are up to date" xml:space="preserve">
+    <value>You are up to date</value>
+  </data>
+  <data name="You are up to date ({0})." xml:space="preserve">
+    <value>You are up to date ({0}).</value>
+  </data>
+  <data name="You are using the latest stable version ({0})." xml:space="preserve">
+    <value>You are using the latest stable version ({0}).</value>
+  </data>
+  <data name="Your GitHub account must have write access to this repository. Check the repository owner and token repository selection." xml:space="preserve">
+    <value>Your GitHub account must have write access to this repository. Check the repository owner and token repository selection.</value>
+  </data>
+  <data name="Your RDP session has about {0} minutes left. Save your files now. Receive files via Taildrop before the session ends." xml:space="preserve">
+    <value>Your RDP session has about {0} minutes left. Save your files now. Receive files via Taildrop before the session ends.</value>
+  </data>
+  <data name="Your repository has an older workflow. Update .github/workflows/main.yml from this release." xml:space="preserve">
+    <value>Your repository has an older workflow. Update .github/workflows/main.yml from this release.</value>
+  </data>
+  <data name="Your session has about {0} minutes remaining. Save your files or use Receive files before it ends." xml:space="preserve">
+    <value>Your session has about {0} minutes remaining. Save your files or use Receive files before it ends.</value>
+  </data>
+  <data name="Your token is invalid or expired. Use Change token to sign in again." xml:space="preserve">
+    <value>Your token is invalid or expired. Use Change token to sign in again.</value>
+  </data>
+  <data name="connection.json exceeds the allowed size." xml:space="preserve">
+    <value>connection.json exceeds the allowed size.</value>
+  </data>
+  <data name="main.yml is not active. Open the repository's Actions tab and enable the workflow." xml:space="preserve">
+    <value>main.yml is not active. Open the repository's Actions tab and enable the workflow.</value>
+  </data>
+</root>

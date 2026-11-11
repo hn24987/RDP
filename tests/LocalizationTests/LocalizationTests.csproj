@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><RootNamespace>RdpLauncher</RootNamespace></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../desktop/RdpLauncher/L.cs" Link="L.cs" />
+    <EmbeddedResource Include="../../desktop/RdpLauncher/Resources/Strings.resx" Link="Resources/Strings.resx" />
+    <EmbeddedResource Include="../../desktop/RdpLauncher/Resources/Strings.vi.resx" Link="Resources/Strings.vi.resx" />
+  </ItemGroup>
+</Project>

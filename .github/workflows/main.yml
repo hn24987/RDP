@@ -1,12 +1,12 @@
 name: RDP
-run-name: rdp-app-${{ inputs.request_id }}
+run-name: rdp-app-${{ inputs.request_id || github.run_id }}
 
 on:
   workflow_dispatch:
     inputs:
       request_id:
-        description: 'Session ID (app supplies this automatically)'
-        required: true
+        description: 'Optional session ID — leave empty when running manually'
+        required: false
         type: string
       duration_minutes:
         description: 'Session duration, 10–300 minutes'
@@ -27,7 +27,7 @@ jobs:
         env:
           TS_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
           RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
-          REQUEST_ID: ${{ inputs.request_id }}
+          REQUEST_ID: ${{ inputs.request_id || github.run_id }}
           DURATION: ${{ inputs.duration_minutes }}
         run: |
           $ErrorActionPreference = 'Stop'
@@ -100,10 +100,13 @@ jobs:
       - name: Publish connection info
         shell: pwsh
         env:
-          REQUEST_ID: ${{ inputs.request_id }}
+          REQUEST_ID: ${{ inputs.request_id || github.run_id }}
           DURATION: ${{ inputs.duration_minutes }}
         run: |
           # RDP_LAUNCHER_PROTOCOL_V1 — checked by the desktop app before dispatch.
+          Write-Host "RDP address: $env:TAILSCALE_IP"
+          Write-Host 'Username: RDP'
+          Write-Host 'Password: use the value saved in your RDP_PASSWORD repository secret.'
           $now = [DateTimeOffset]::UtcNow
           @{
             protocol = 1
@@ -118,7 +121,7 @@ jobs:
       - name: Upload connection info
         uses: actions/upload-artifact@v4
         with:
-          name: rdp-connection-${{ inputs.request_id }}
+          name: rdp-connection-${{ inputs.request_id || github.run_id }}
           path: ${{ runner.temp }}/connection.json
           retention-days: 1
           if-no-files-found: error

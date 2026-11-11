@@ -6,8 +6,6 @@
 
 Create a Windows desktop on GitHub Actions, access it through Tailscale, and control it using Remote Desktop. RDP Launcher helps you set up the connection and start each session.
 
-**Created by [hn24987](https://github.com/hn24987)**
-
 [![Windows build](https://github.com/hn24987/RDP-Launcher/actions/workflows/build-app.yml/badge.svg)](https://github.com/hn24987/RDP-Launcher/actions/workflows/build-app.yml)
 [![Latest release](https://img.shields.io/github/v/release/hn24987/RDP-Launcher)](https://github.com/hn24987/RDP-Launcher/releases/latest)
 [![License: MIT](https://img.shields.io/github/license/hn24987/RDP-Launcher)](LICENSE)

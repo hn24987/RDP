@@ -16,7 +16,7 @@ public sealed class GitHubClient : IDisposable
     public GitHubClient(string repository, string token, HttpMessageHandler? handler = null)
     {
         if (!Regex.IsMatch(repository, @"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"))
-            throw new InvalidOperationException("Repository must use the owner/repo format.");
+            throw new InvalidOperationException(L.T("Repository must use the owner/repo format."));
         repo = $"repos/{repository}";
         http = handler is null ? new HttpClient() : new HttpClient(handler);
         http.BaseAddress = new Uri("https://api.github.com/");
@@ -36,13 +36,13 @@ public sealed class GitHubClient : IDisposable
         {
             var hint = response.StatusCode switch
             {
-                HttpStatusCode.Unauthorized => "Your token is invalid or expired. Use Change token to sign in again.",
-                HttpStatusCode.Forbidden => "Check token permissions, organization approval/SSO, Actions policy, or API rate limits.",
-                HttpStatusCode.NotFound => "Repository/workflow not found or your token does not have access. Select the repository when creating the token.",
-                HttpStatusCode.UnprocessableEntity => "Check the branch, workflow_dispatch, and workflow inputs.",
-                _ => "Open Actions / logs for details. If dispatch may have succeeded, use Resume run instead of creating another session."
+                HttpStatusCode.Unauthorized => L.T("Your token is invalid or expired. Use Change token to sign in again."),
+                HttpStatusCode.Forbidden => L.T("Check token permissions, organization approval/SSO, Actions policy, or API rate limits."),
+                HttpStatusCode.NotFound => L.T("Repository/workflow not found or your token does not have access. Select the repository when creating the token."),
+                HttpStatusCode.UnprocessableEntity => L.T("Check the branch, workflow_dispatch, and workflow inputs."),
+                _ => L.T("Open Actions / logs for details. If dispatch may have succeeded, use Resume run instead of creating another session.")
             };
-            throw new InvalidOperationException($"GitHub HTTP {(int)response.StatusCode}: {hint}");
+            throw new InvalidOperationException(L.F("GitHub HTTP {0}: {1}", (int)response.StatusCode, hint));
         }
         if (response.StatusCode == HttpStatusCode.NoContent) return default;
         using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
@@ -63,30 +63,30 @@ public sealed class GitHubClient : IDisposable
         if (!isSource)
         {
             if (!metadata.TryGetProperty("fork", out var fork) || !fork.GetBoolean())
-                throw new InvalidOperationException("Use hn24987/RDP-Launcher if you have write access, or a fork of that project that you control.");
+                throw new InvalidOperationException(L.T("Use hn24987/RDP-Launcher if you have write access, or a fork of that project that you control."));
             if (!metadata.TryGetProperty("source", out var source) ||
                 !RepositoryAddress.IsSource(source.GetProperty("full_name").GetString()))
-                throw new InvalidOperationException("This fork does not belong to the hn24987/RDP-Launcher fork network.");
+                throw new InvalidOperationException(L.T("This fork does not belong to the hn24987/RDP-Launcher fork network."));
         }
         if (!metadata.TryGetProperty("permissions", out var permissions) ||
             !permissions.TryGetProperty("push", out var push) || !push.GetBoolean())
-            throw new InvalidOperationException("Your GitHub account must have write access to this repository. Check the repository owner and token repository selection.");
+            throw new InvalidOperationException(L.T("Your GitHub account must have write access to this repository. Check the repository owner and token repository selection."));
         if (metadata.GetProperty("archived").GetBoolean())
-            throw new InvalidOperationException("This repository is archived. Unarchive it before running workflows.");
+            throw new InvalidOperationException(L.T("This repository is archived. Unarchive it before running workflows."));
         if (metadata.TryGetProperty("disabled", out var disabled) && disabled.GetBoolean())
-            throw new InvalidOperationException("This repository is disabled by GitHub.");
+            throw new InvalidOperationException(L.T("This repository is disabled by GitHub."));
     }
 
     public async Task<string> Preflight(Action<string> log, CancellationToken ct)
     {
-        log("Checking GitHub authentication and repository…");
+        log(L.T("Checking GitHub authentication and repository…"));
         var userTask = GetIdentity(ct);
         var metadataTask = Request(HttpMethod.Get, repo, null, ct);
         await Task.WhenAll(userTask, metadataTask);
         var metadata = await metadataTask;
         ValidateRepository(metadata);
         var branch = metadata.GetProperty("default_branch").GetString()!;
-        log($"PASS · Signed in as {await userTask}; verified your RDP repository; default branch: {branch}");
+        log(L.F("PASS · Signed in as {0}; verified your RDP repository; default branch: {1}", await userTask, branch));
 
         // Independent read-only checks run together to keep preflight quick.
         var policyTask = Get("actions/permissions", ct);
@@ -96,14 +96,14 @@ public sealed class GitHubClient : IDisposable
         var runsTask = Get("actions/workflows/main.yml/runs?per_page=100&page=1", ct);
         await Task.WhenAll(policyTask, workflowTask, sourceTask, secretsTask, runsTask);
         if (!(await policyTask).GetProperty("enabled").GetBoolean())
-            throw new InvalidOperationException("Actions are disabled on this repository. Open Actions, enable workflows, and check Settings > Actions > General.");
-        log("PASS · GitHub Actions is enabled");
+            throw new InvalidOperationException(L.T("Actions are disabled on this repository. Open Actions, enable workflows, and check Settings > Actions > General."));
+        log(L.T("PASS · GitHub Actions is enabled"));
         if ((await workflowTask).GetProperty("state").GetString() != "active")
-            throw new InvalidOperationException("main.yml is not active. Open the repository's Actions tab and enable the workflow.");
+            throw new InvalidOperationException(L.T("main.yml is not active. Open the repository's Actions tab and enable the workflow."));
         var yaml = Encoding.UTF8.GetString(Convert.FromBase64String((await sourceTask).GetProperty("content").GetString()!));
         if (!yaml.Contains("RDP_LAUNCHER_PROTOCOL_V1") || !yaml.Contains("workflow_dispatch:"))
-            throw new InvalidOperationException("Your repository has an older workflow. Update .github/workflows/main.yml from this release.");
-        log("PASS · Workflow is active and supports the launcher");
+            throw new InvalidOperationException(L.T("Your repository has an older workflow. Update .github/workflows/main.yml from this release."));
+        log(L.T("PASS · Workflow is active and supports the launcher"));
         var names = new HashSet<string>();
         var secrets = await secretsTask;
         for (var page = 1; ; page++)
@@ -115,16 +115,16 @@ public sealed class GitHubClient : IDisposable
         }
         var missing = new[] { "TAILSCALE_AUTH_KEY", "RDP_PASSWORD" }.Where(name => !names.Contains(name)).ToArray();
         if (missing.Length != 0)
-            throw new InvalidOperationException($"Missing repository secrets: {string.Join(", ", missing)}. Open Secrets to add them; forked repositories do not inherit secrets.");
-        log("PASS · TAILSCALE_AUTH_KEY and RDP_PASSWORD exist (values cannot be read back)");
+            throw new InvalidOperationException(L.F("Missing repository secrets: {0}. Open Secrets to add them; forked repositories do not inherit secrets.", string.Join(", ", missing)));
+        log(L.T("PASS · TAILSCALE_AUTH_KEY and RDP_PASSWORD exist (values cannot be read back)"));
         foreach (var run in (await runsTask).GetProperty("workflow_runs").EnumerateArray())
         {
             var status = run.GetProperty("status").GetString();
             if (status is not ("completed" or "cancelled"))
-                log($"NOTICE · Existing run {run.GetProperty("id").GetInt64()} is {status}. Resume it if you do not need another machine.");
+                log(L.F("NOTICE · Existing run {0} is {1}. Resume it if you do not need another machine.", run.GetProperty("id").GetInt64(), status));
         }
-        log("PASS · Workflow runs are readable. GitHub confirms Actions write permission when dispatching.");
-        log("Runner availability, billing/quota, Auth Key validity, device approval and ACLs are confirmed only during startup/connection.");
+        log(L.T("PASS · Workflow runs are readable. GitHub confirms Actions write permission when dispatching."));
+        log(L.T("Runner availability, billing/quota, Auth Key validity, device approval and ACLs are confirmed only during startup/connection."));
         return branch;
     }
     public Task<JsonElement> Dispatch(string branch, string requestId, int minutes, CancellationToken ct) =>
@@ -151,17 +151,17 @@ public sealed class GitHubClient : IDisposable
         var artifacts = result.GetProperty("artifacts").EnumerateArray()
             .Where(x => x.GetProperty("name").GetString()!.StartsWith("rdp-connection-") && !x.GetProperty("expired").GetBoolean()).ToArray();
         if (artifacts.Length == 0) return null;
-        if (artifacts.Length != 1) throw new InvalidOperationException("This run has multiple connection artifacts. Refusing to guess the session.");
+        if (artifacts.Length != 1) throw new InvalidOperationException(L.T("This run has multiple connection artifacts. Refusing to guess the session."));
         var artifact = artifacts[0];
-        if (artifact.GetProperty("size_in_bytes").GetInt64() > 1_000_000) throw new InvalidOperationException("Artifact exceeds the allowed size.");
+        if (artifact.GetProperty("size_in_bytes").GetInt64() > 1_000_000) throw new InvalidOperationException(L.T("Artifact exceeds the allowed size."));
         var id = artifact.GetProperty("id").GetInt64();
         using var response = await http.GetAsync($"{repo}/actions/artifacts/{id}/zip", ct);
-        if (!response.IsSuccessStatusCode) throw new InvalidOperationException($"Could not download artifact: HTTP {(int)response.StatusCode}.");
+        if (!response.IsSuccessStatusCode) throw new InvalidOperationException(L.F("Could not download artifact: HTTP {0}.", (int)response.StatusCode));
         var bytes = await response.Content.ReadAsByteArrayAsync(ct);
-        if (bytes.Length > 1_000_000) throw new InvalidOperationException("Artifact exceeds the allowed size.");
+        if (bytes.Length > 1_000_000) throw new InvalidOperationException(L.T("Artifact exceeds the allowed size."));
         using var zip = new ZipArchive(new MemoryStream(bytes));
-        var entry = zip.GetEntry("connection.json") ?? throw new InvalidOperationException("Artifact is missing connection.json.");
-        if (entry.Length > 16384) throw new InvalidOperationException("connection.json exceeds the allowed size.");
+        var entry = zip.GetEntry("connection.json") ?? throw new InvalidOperationException(L.T("Artifact is missing connection.json."));
+        if (entry.Length > 16384) throw new InvalidOperationException(L.T("connection.json exceeds the allowed size."));
         using var reader = new StreamReader(entry.Open());
         return ParseConnection(await reader.ReadToEndAsync(ct), runId, artifact.GetProperty("name").GetString()!);
     }
@@ -171,17 +171,17 @@ public sealed class GitHubClient : IDisposable
         var root = document.RootElement;
         if (root.GetProperty("protocol").GetInt32() != 1 || root.GetProperty("run_id").GetString() != runId.ToString() ||
             artifactName != "rdp-connection-" + root.GetProperty("request_id").GetString())
-            throw new InvalidOperationException("Connection artifact does not match this session.");
+            throw new InvalidOperationException(L.T("Connection artifact does not match this session."));
         var ip = root.GetProperty("ip").GetString()!;
         if (!IPAddress.TryParse(ip, out var address) || address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork)
-            throw new InvalidOperationException("Invalid IP address.");
+            throw new InvalidOperationException(L.T("Invalid IP address."));
         var octets = address.GetAddressBytes();
         if (octets[0] != 100 || octets[1] < 64 || octets[1] > 127)
-            throw new InvalidOperationException("IP address is outside the Tailscale range.");
+            throw new InvalidOperationException(L.T("IP address is outside the Tailscale range."));
         var username = root.GetProperty("username").GetString();
-        if (username != "RDP") throw new InvalidOperationException("Invalid RDP username.");
+        if (username != "RDP") throw new InvalidOperationException(L.T("Invalid RDP username."));
         var expires = root.GetProperty("expires_at").GetDateTimeOffset();
-        if (expires <= DateTimeOffset.UtcNow) throw new InvalidOperationException("This RDP session has expired.");
+        if (expires <= DateTimeOffset.UtcNow) throw new InvalidOperationException(L.T("This RDP session has expired."));
         return new ConnectionInfo(ip, username, expires);
     }
     public Task<JsonElement> Cancel(long runId, CancellationToken ct) => Request(HttpMethod.Post, $"{repo}/actions/runs/{runId}/cancel", null, ct);

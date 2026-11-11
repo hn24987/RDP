@@ -2,7 +2,7 @@
 
 [← Back to RDP Launcher](../README.md)
 
-Set up your own fork once, then use **Get RDP** to start future sessions.
+Set up a repository you control once, then use **Get RDP** to start future sessions. The owner can use the source repository directly; other users use their own fork.
 
 ## First-time setup
 
@@ -28,6 +28,37 @@ Set up your own fork once, then use **Get RDP** to start future sessions.
 6. Click **Stop workflow** when finished. Closing the app or clicking **Stop monitoring** does not stop GitHub Actions. Temporary runner data is lost when the session ends.
 
 To return to a session, reopen the app and click **Resume run**. You can also enter its Run ID from `https://github.com/OWNER/REPO/actions/runs/RUN_ID`. Run IDs and request IDs are kept separately per fork in `%LOCALAPPDATA%\RdpLauncher\session-v2.json`; this file contains no token or RDP password. To create another session after the old one ends, clear Run ID. If a request has an uncertain result, the app asks you to check Actions before discarding that request ID, preventing accidental duplicate launches.
+
+## Updates and language
+
+Use **Check for updates** to compare the installed version with the latest stable release on the official GitHub repository. If a newer version is found, the app offers to open the release page. It does not silently replace the EXE or run a downloaded file. An update check needs Internet access; a network failure does not stop a running RDP session.
+
+In **Settings**, choose **English** or **Tiếng Việt**. The language preference is saved locally. Repository names, IP addresses, paths and GitHub/Tailscale responses remain their original values.
+
+When updating, close the old launcher and replace its EXE with the matching architecture from Releases. Keep `github-token.dat` in the same folder to retain sign-in under the same Windows account.
+
+## Session countdown
+
+While the launcher is open and has connection information for a monitored session, it shows the time remaining and warns once when the session reaches **10 minutes** and **5 minutes** remaining. The warnings include a sound and remind you to save files. Reopening or reconnecting to a session should not be treated as a fresh timer; the runner's published expiry time is the reference.
+
+The clock reflects the published schedule. A workflow can still end early because it was cancelled, failed or reached a GitHub limit. Closing the launcher or suspending the local PC prevents timely reminders. The launcher cannot recover files after the runner has been removed.
+
+## Receive files with Taildrop
+
+Taildrop transfers files over Tailscale rather than publishing them as GitHub artifacts. This version receives files already sent to your PC's Taildrop inbox; it does not browse or pull arbitrary files from the remote filesystem automatically.
+
+1. Keep both your PC and the RDP runner connected to Tailscale. Taildrop must be enabled by your tailnet administrator. The sending and receiving devices must be owned by the **same Tailscale user**; tagged devices and cross-user/device-sharing arrangements may not support Taildrop. Check [Tailscale's Taildrop documentation](https://tailscale.com/kb/1106/taildrop) for the current restrictions.
+2. On your local PC, obtain its Tailscale IPv4 address from the Tailscale app or run `tailscale ip -4`. Use your **local PC's** address as the destination.
+3. Inside the RDP session, open PowerShell and send a file you chose. Replace the sample path and destination with your own values:
+
+   ```powershell
+   & "$env:ProgramFiles\Tailscale\tailscale.exe" file cp "C:\Users\RDP\Desktop\report.zip" "100.100.100.100:"
+   ```
+
+4. Back in RDP Launcher on your PC, click **Receive files**, choose a local destination folder, and wait for the receive result. The app invokes `tailscale file get` against that folder; it does not need your GitHub token for this transfer.
+5. Open the received file locally and confirm it is complete **before** stopping the workflow or letting the session end. A countdown reminder does not automatically send or back up files.
+
+On Windows, the Tailscale desktop app may already save incoming files to Downloads. If the inbox is empty, check that folder first, then confirm that the remote send succeeded, that you used the local PC's address, and that both devices meet Taildrop's ownership/policy requirements. Treat incoming files as files received from another computer; only open files you recognize and intended to send.
 
 ## Preflight checks
 
@@ -57,16 +88,33 @@ Only encrypted token bytes are stored beside the EXE. DPAPI ties decryption to y
 
 Connection artifacts contain the IP, username and session timing, never the RDP password. On public forks, users who can read Actions may see this metadata. The EXE is unsigned; Windows SmartScreen may ask you to verify its publisher. Source is included so you can inspect and build it yourself.
 
+## Verify your download and SmartScreen
+
+The current EXE is **unsigned**. A checksum helps detect a damaged or changed download, but it does not replace a publisher signature or establish that a file is safe by itself.
+
+1. Download only from [the official Releases page](https://github.com/hn24987/RDP-Launcher/releases). Confirm that the repository owner is `hn24987` and the repository is `RDP-Launcher`.
+2. Download `SHA256.txt` from the same release. In PowerShell, calculate the hash of the file you downloaded:
+
+   ```powershell
+   Get-FileHash .\RdpLauncher.exe -Algorithm SHA256
+   ```
+
+   Compare it with the matching filename in `SHA256.txt`. For an architecture-specific EXE or ZIP, calculate that file's hash and compare its exact filename instead. Stop if the hashes differ.
+3. After verifying the source and checksum, if Windows shows **Windows protected your PC** for this download, select **More info → Run anyway** only if you trust this project and intend to run it. Some managed PCs block this action; follow your administrator's policy.
+
+Do not disable Microsoft Defender or SmartScreen globally. If the file has a malware detection rather than an unknown-publisher prompt, investigate the specific detection before running it. Source is available for inspection and self-building.
+
 ## Build from source
 
-With .NET 8 SDK:
+With .NET 8 SDK, from the repository root:
 
 ```powershell
 dotnet run --project tests/ContractTests.csproj
 dotnet run --project tests/WindowsTokenTests/WindowsTokenTests.csproj # Windows only
-dotnet publish desktop/RdpLauncher/RdpLauncher.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=None -o artifacts
+dotnet publish desktop/RdpLauncher/RdpLauncher.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=None -o artifacts/win-x64
+dotnet publish desktop/RdpLauncher/RdpLauncher.csproj -c Release -r win-arm64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=None -o artifacts/win-arm64
 ```
 
-Or, after adding this source to your repository's default branch, open **Actions → Build Windows app → Run workflow**, then download **RdpLauncher-win-x64**. That build also runs the Windows token-storage smoke test. See [release notes](../RELEASE_NOTES.md) and the [release-writing prompt](../RELEASE_PROMPT.md).
+Or, after adding this source to your repository's default branch, open **Actions → Build Windows app → Run workflow**, then choose the **win-x64** or **win-arm64** artifact. ZIP names use the validated tag or the version in the project file. That build also runs the Windows token-storage smoke test on x64; an ARM64 cross-build is not a native ARM64 runtime test. See [CONTRIBUTING.md](../CONTRIBUTING.md) for the complete contribution and validation workflow. See [release notes](../RELEASE_NOTES.md) and the [release-writing prompt](../RELEASE_PROMPT.md).
 
 The workflow creates a standard RDP user with NLA/TLS, limits its RDP firewall rule to Tailscale addresses, publishes connection metadata before keeping the session alive, and logs out of Tailscale during cleanup. Use this temporary environment for testing in accordance with GitHub Actions and Tailscale terms.

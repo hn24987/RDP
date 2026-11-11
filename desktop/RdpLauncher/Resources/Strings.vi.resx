@@ -1,0 +1,602 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="&#10;[output truncated]" xml:space="preserve">
+    <value>
+[đã rút gọn kết quả]</value>
+  </data>
+  <data name="10 minutes remaining" xml:space="preserve">
+    <value>Còn 10 phút</value>
+  </data>
+  <data name="5 minutes remaining" xml:space="preserve">
+    <value>Còn 5 phút</value>
+  </data>
+  <data name="A previous session is saved. Use Resume run first. After it ends, clear Run ID before starting a new session." xml:space="preserve">
+    <value>Đang lưu một phiên trước. Hãy dùng Theo dõi phiên trước. Sau khi phiên kết thúc, xóa ID lần chạy để tạo phiên mới.</value>
+  </data>
+  <data name="Actions / logs" xml:space="preserve">
+    <value>Actions / nhật ký</value>
+  </data>
+  <data name="Actions are disabled on this repository. Open Actions, enable workflows, and check Settings &gt; Actions &gt; General." xml:space="preserve">
+    <value>Actions đang tắt trong kho mã này. Mở Actions để bật workflow rồi kiểm tra Settings &gt; Actions &gt; General.</value>
+  </data>
+  <data name="Add / change token" xml:space="preserve">
+    <value>Thêm / đổi token</value>
+  </data>
+  <data name="Artifact exceeds the allowed size." xml:space="preserve">
+    <value>Artifact vượt quá kích thước cho phép.</value>
+  </data>
+  <data name="Artifact is missing connection.json." xml:space="preserve">
+    <value>Artifact thiếu connection.json.</value>
+  </data>
+  <data name="Auth Keys" xml:space="preserve">
+    <value>Khóa xác thực</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Cannot save beside the EXE. Move the app to a writable folder, then try again." xml:space="preserve">
+    <value>Không thể lưu cạnh file EXE. Chuyển app vào thư mục có quyền ghi rồi thử lại.</value>
+  </data>
+  <data name="Check for updates" xml:space="preserve">
+    <value>Kiểm tra cập nhật</value>
+  </data>
+  <data name="Check setup" xml:space="preserve">
+    <value>Kiểm tra thiết lập</value>
+  </data>
+  <data name="Check the branch, workflow_dispatch, and workflow inputs." xml:space="preserve">
+    <value>Kiểm tra nhánh, workflow_dispatch và các đầu vào của workflow.</value>
+  </data>
+  <data name="Check token permissions, organization approval/SSO, Actions policy, or API rate limits." xml:space="preserve">
+    <value>Kiểm tra quyền token, phê duyệt tổ chức/SSO, chính sách Actions hoặc giới hạn API.</value>
+  </data>
+  <data name="Checking GitHub authentication and repository…" xml:space="preserve">
+    <value>Đang kiểm tra xác thực GitHub và kho mã…</value>
+  </data>
+  <data name="Checking for updates…" xml:space="preserve">
+    <value>Đang kiểm tra cập nhật…</value>
+  </data>
+  <data name="Checking local Tailscale and your repository in parallel…" xml:space="preserve">
+    <value>Đang đồng thời kiểm tra Tailscale trên máy và kho mã…</value>
+  </data>
+  <data name="Choose a folder for files received from your RDP machine." xml:space="preserve">
+    <value>Chọn thư mục nhận file từ máy RDP.</value>
+  </data>
+  <data name="Choose a folder for received files" xml:space="preserve">
+    <value>Chọn thư mục nhận file</value>
+  </data>
+  <data name="Choose an absolute Tailscale executable path." xml:space="preserve">
+    <value>Chọn đường dẫn tuyệt đối tới chương trình Tailscale.</value>
+  </data>
+  <data name="Choose an absolute destination folder path." xml:space="preserve">
+    <value>Chọn đường dẫn tuyệt đối tới thư mục nhận file.</value>
+  </data>
+  <data name="Click Add / change token to connect your GitHub account first." xml:space="preserve">
+    <value>Bấm Thêm / đổi token để kết nối tài khoản GitHub trước.</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="Close this dialog" xml:space="preserve">
+    <value>Đóng hộp thoại này</value>
+  </data>
+  <data name="Closing the app stops monitoring only. The workflow keeps running; you can resume monitoring later. Close the app?" xml:space="preserve">
+    <value>Đóng app chỉ ngừng theo dõi. Workflow vẫn chạy; bạn có thể theo dõi lại sau. Đóng app?</value>
+  </data>
+  <data name="Connect your GitHub account" xml:space="preserve">
+    <value>Kết nối tài khoản GitHub</value>
+  </data>
+  <data name="Connection artifact does not match this session." xml:space="preserve">
+    <value>Artifact kết nối không khớp với phiên này.</value>
+  </data>
+  <data name="Connection details reflect the last check. Use Resume run to refresh; Stop workflow to end the session." xml:space="preserve">
+    <value>Thông tin kết nối là kết quả lần kiểm tra cuối. Dùng Theo dõi phiên để cập nhật; Dừng workflow để kết thúc.</value>
+  </data>
+  <data name="Copy IP" xml:space="preserve">
+    <value>Sao chép IP</value>
+  </data>
+  <data name="Could not delete token file: " xml:space="preserve">
+    <value>Không thể xóa file token: </value>
+  </data>
+  <data name="Could not delete token file: {0}" xml:space="preserve">
+    <value>Không thể xóa file token: {0}</value>
+  </data>
+  <data name="Could not download artifact: HTTP {0}." xml:space="preserve">
+    <value>Không tải được artifact: HTTP {0}.</value>
+  </data>
+  <data name="Could not load the previous session. You can enter a Run ID manually." xml:space="preserve">
+    <value>Không thể nạp phiên trước. Bạn có thể nhập ID lần chạy thủ công.</value>
+  </data>
+  <data name="Could not open Remote Desktop: " xml:space="preserve">
+    <value>Không thể mở Remote Desktop: </value>
+  </data>
+  <data name="Could not open Remote Desktop: {0}" xml:space="preserve">
+    <value>Không thể mở Remote Desktop: {0}</value>
+  </data>
+  <data name="Could not save language preference: " xml:space="preserve">
+    <value>Không thể lưu ngôn ngữ đã chọn: </value>
+  </data>
+  <data name="Could not start the Tailscale file receiver." xml:space="preserve">
+    <value>Không thể khởi chạy chức năng nhận file Tailscale.</value>
+  </data>
+  <data name="Create a GitHub token" xml:space="preserve">
+    <value>Tạo token GitHub</value>
+  </data>
+  <data name="Create a fine-grained personal access token for the repository you will run.&#10;Owners can select hn24987/RDP-Launcher directly.&#10;Repository permissions: Actions — Read and write; Contents, Secrets, Administration — Read-only. Metadata is automatic." xml:space="preserve">
+    <value>Tạo fine-grained personal access token cho kho mã sẽ chạy.
+Chủ dự án có thể chọn trực tiếp hn24987/RDP-Launcher.
+Quyền kho mã: Actions — Read and write; Contents, Secrets, Administration — Read-only. Metadata được cấp tự động.</value>
+  </data>
+  <data name="Created by hn24987" xml:space="preserve">
+    <value>Tạo bởi hn24987</value>
+  </data>
+  <data name="Delete the saved token from this folder?" xml:space="preserve">
+    <value>Xóa token đã lưu trong thư mục này?</value>
+  </data>
+  <data name="Discard saved request" xml:space="preserve">
+    <value>Bỏ yêu cầu đã lưu</value>
+  </data>
+  <data name="Dispatching session {0}…" xml:space="preserve">
+    <value>Đang gửi yêu cầu phiên {0}…</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Enter a Run ID to stop." xml:space="preserve">
+    <value>Nhập ID lần chạy cần dừng.</value>
+  </data>
+  <data name="Enter the Run ID from your GitHub Actions URL: /actions/runs/123456." xml:space="preserve">
+    <value>Nhập ID lần chạy từ URL GitHub Actions: /actions/runs/123456.</value>
+  </data>
+  <data name="Enter your GitHub token." xml:space="preserve">
+    <value>Nhập token GitHub của bạn.</value>
+  </data>
+  <data name="Enter your repository URL: https://github.com/YOUR-USERNAME/RDP" xml:space="preserve">
+    <value>Nhập URL kho mã của bạn: https://github.com/TEN-CUA-BAN/RDP</value>
+  </data>
+  <data name="Error: " xml:space="preserve">
+    <value>Lỗi: </value>
+  </data>
+  <data name="Error: {0}" xml:space="preserve">
+    <value>Lỗi: {0}</value>
+  </data>
+  <data name="FAIL · " xml:space="preserve">
+    <value>LỖI · </value>
+  </data>
+  <data name="FAIL · {0}" xml:space="preserve">
+    <value>LỖI · {0}</value>
+  </data>
+  <data name="File receive complete." xml:space="preserve">
+    <value>Đã nhận file xong.</value>
+  </data>
+  <data name="File retrieval cancelled." xml:space="preserve">
+    <value>Đã hủy nhận file.</value>
+  </data>
+  <data name="File retrieval timed out after 30 seconds. Check Tailscale and try receiving again. Files are not uploaded to GitHub." xml:space="preserve">
+    <value>Nhận file hết thời gian chờ sau 30 giây. Kiểm tra Tailscale rồi thử lại. File không được tải lên GitHub.</value>
+  </data>
+  <data name="File transfer" xml:space="preserve">
+    <value>Truyền file</value>
+  </data>
+  <data name="Files received in {0}." xml:space="preserve">
+    <value>File đã được nhận vào {0}.</value>
+  </data>
+  <data name="First run: select the source repository (with write access) or your fork. Enable Actions and add TAILSCALE_AUTH_KEY and RDP_PASSWORD. Forks do not inherit secrets." xml:space="preserve">
+    <value>Lần đầu: chọn kho mã gốc (có quyền ghi) hoặc bản fork. Bật Actions và thêm TAILSCALE_AUTH_KEY, RDP_PASSWORD. Fork không kế thừa secrets.</value>
+  </data>
+  <data name="Forget token" xml:space="preserve">
+    <value>Xóa token</value>
+  </data>
+  <data name="Fork this project" xml:space="preserve">
+    <value>Fork dự án</value>
+  </data>
+  <data name="Get RDP" xml:space="preserve">
+    <value>Tạo RDP</value>
+  </data>
+  <data name="Get RDP runs preflight automatically. When ready, open Remote Desktop and sign in as .\RDP with your RDP_PASSWORD secret. Match any certificate prompt to the displayed IP. Closing this app does not stop your workflow. Your token is encrypted and saved beside the EXE." xml:space="preserve">
+    <value>Tạo RDP tự kiểm tra thiết lập trước khi chạy. Khi sẵn sàng, mở Remote Desktop và đăng nhập .\RDP bằng mật khẩu trong secret RDP_PASSWORD. Đối chiếu cảnh báo chứng chỉ với IP hiển thị. Đóng app không dừng workflow. Token được mã hóa và lưu cạnh EXE.</value>
+  </data>
+  <data name="GitHub HTTP {0}: {1}" xml:space="preserve">
+    <value>GitHub HTTP {0}: {1}</value>
+  </data>
+  <data name="GitHub accepted the request. Finding your run…" xml:space="preserve">
+    <value>GitHub đã nhận yêu cầu. Đang tìm lần chạy…</value>
+  </data>
+  <data name="GitHub authentication · RDP Launcher" xml:space="preserve">
+    <value>Xác thực GitHub · RDP Launcher</value>
+  </data>
+  <data name="GitHub request timed out. Try again." xml:space="preserve">
+    <value>Yêu cầu GitHub hết thời gian chờ. Hãy thử lại.</value>
+  </data>
+  <data name="GitHub returned invalid release metadata." xml:space="preserve">
+    <value>GitHub trả về thông tin phát hành không hợp lệ.</value>
+  </data>
+  <data name="GitHub returned unreadable release metadata." xml:space="preserve">
+    <value>GitHub trả về thông tin phát hành không đọc được.</value>
+  </data>
+  <data name="GitHub token not configured" xml:space="preserve">
+    <value>Chưa thiết lập token GitHub</value>
+  </data>
+  <data name="GitHub token validated and encrypted beside the EXE. Repository permissions are checked during preflight." xml:space="preserve">
+    <value>Đã xác thực và lưu token GitHub được mã hóa cạnh EXE. Quyền kho mã sẽ được kiểm tra trước khi chạy.</value>
+  </data>
+  <data name="IP address is outside the Tailscale range." xml:space="preserve">
+    <value>Địa chỉ IP không thuộc dải Tailscale.</value>
+  </data>
+  <data name="IP: {0}   ·   User: .\{1}&#10;Expected end: {2:HH:mm dd/MM/yyyy} (your local time)" xml:space="preserve">
+    <value>IP: {0}   ·   Tài khoản: .\{1}
+Dự kiến kết thúc: {2:HH:mm dd/MM/yyyy} (giờ máy bạn)</value>
+  </data>
+  <data name="IP: {0}   ·   User: .\{1}&#10;Expected end: {2} (your local time)" xml:space="preserve">
+    <value>IP: {0}   ·   Tài khoản: .\{1}
+Dự kiến kết thúc: {2} (giờ máy bạn)</value>
+  </data>
+  <data name="Install Tailscale" xml:space="preserve">
+    <value>Cài Tailscale</value>
+  </data>
+  <data name="Invalid IP address." xml:space="preserve">
+    <value>Địa chỉ IP không hợp lệ.</value>
+  </data>
+  <data name="Invalid RDP username." xml:space="preserve">
+    <value>Tên tài khoản RDP không hợp lệ.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="Language changes apply immediately. Existing log entries keep their original language." xml:space="preserve">
+    <value>Ngôn ngữ được đổi ngay. Các dòng nhật ký cũ giữ nguyên ngôn ngữ lúc được ghi.</value>
+  </data>
+  <data name="Missing repository secrets: {0}. Open Secrets to add them; forked repositories do not inherit secrets." xml:space="preserve">
+    <value>Thiếu secrets của kho mã: {0}. Mở Secrets để thêm; bản fork không kế thừa secrets.</value>
+  </data>
+  <data name="Monitoring stopped. The workflow keeps running unless you stop it." xml:space="preserve">
+    <value>Đã ngừng theo dõi. Workflow vẫn tiếp tục cho đến khi bạn dừng.</value>
+  </data>
+  <data name="NOTICE · Existing run {0} is {1}. Resume it if you do not need another machine." xml:space="preserve">
+    <value>LƯU Ý · Lần chạy {0} đang ở trạng thái {1}. Theo dõi lại nếu bạn không cần thêm máy.</value>
+  </data>
+  <data name="Network request timed out. Use Resume run to avoid creating duplicate sessions." xml:space="preserve">
+    <value>Yêu cầu mạng hết thời gian chờ. Dùng Theo dõi phiên để tránh tạo máy trùng.</value>
+  </data>
+  <data name="No RDP session connected." xml:space="preserve">
+    <value>Chưa kết nối phiên RDP.</value>
+  </data>
+  <data name="No pending files were reported. Check Downloads if Tailscale already saved them." xml:space="preserve">
+    <value>Không thấy file đang chờ. Kiểm tra Downloads nếu Tailscale đã lưu file.</value>
+  </data>
+  <data name="No stable release is available yet." xml:space="preserve">
+    <value>Chưa có bản phát hành ổn định.</value>
+  </data>
+  <data name="Open Actions / logs for details. If dispatch may have succeeded, use Resume run instead of creating another session." xml:space="preserve">
+    <value>Mở Actions / nhật ký để xem chi tiết. Nếu yêu cầu chạy có thể đã thành công, hãy dùng Theo dõi phiên để tránh tạo thêm máy.</value>
+  </data>
+  <data name="Open Remote Desktop" xml:space="preserve">
+    <value>Mở Remote Desktop</value>
+  </data>
+  <data name="Open Tailscale" xml:space="preserve">
+    <value>Mở Tailscale</value>
+  </data>
+  <data name="Open release page?" xml:space="preserve">
+    <value>Mở trang phát hành?</value>
+  </data>
+  <data name="PASS · GitHub Actions is enabled" xml:space="preserve">
+    <value>ĐẠT · GitHub Actions đã bật</value>
+  </data>
+  <data name="PASS · Signed in as {0}; verified your RDP repository; default branch: {1}" xml:space="preserve">
+    <value>ĐẠT · Đã đăng nhập {0}; kho mã RDP hợp lệ; nhánh mặc định: {1}</value>
+  </data>
+  <data name="PASS · TAILSCALE_AUTH_KEY and RDP_PASSWORD exist (values cannot be read back)" xml:space="preserve">
+    <value>ĐẠT · Có TAILSCALE_AUTH_KEY và RDP_PASSWORD (không thể đọc lại giá trị)</value>
+  </data>
+  <data name="PASS · Tailscale is installed" xml:space="preserve">
+    <value>ĐẠT · Tailscale đã cài</value>
+  </data>
+  <data name="PASS · Tailscale service is responding, connected and online. Use the same tailnet as the runner Auth Key." xml:space="preserve">
+    <value>ĐẠT · Dịch vụ Tailscale phản hồi, đã kết nối và trực tuyến. Dùng cùng tailnet với Auth Key của runner.</value>
+  </data>
+  <data name="PASS · The runner has enabled RDP. Use the password you set in the RDP_PASSWORD secret." xml:space="preserve">
+    <value>ĐẠT · Runner đã bật RDP. Dùng mật khẩu đã đặt trong secret RDP_PASSWORD.</value>
+  </data>
+  <data name="PASS · Workflow is active and supports the launcher" xml:space="preserve">
+    <value>ĐẠT · Workflow đã bật và hỗ trợ launcher</value>
+  </data>
+  <data name="PASS · Workflow runs are readable. GitHub confirms Actions write permission when dispatching." xml:space="preserve">
+    <value>ĐẠT · Đọc được các lần chạy workflow. GitHub xác nhận quyền ghi Actions khi gửi yêu cầu chạy.</value>
+  </data>
+  <data name="PASS · Your device can reach TCP 3389. Click Open Remote Desktop." xml:space="preserve">
+    <value>ĐẠT · Máy bạn truy cập được TCP 3389. Bấm Mở Remote Desktop.</value>
+  </data>
+  <data name="Paste the source repository URL or your fork URL to enable Check setup and Get RDP." xml:space="preserve">
+    <value>Dán URL kho mã gốc hoặc bản fork để bật Kiểm tra thiết lập và Tạo RDP.</value>
+  </data>
+  <data name="Preflight complete. Click Get RDP when ready." xml:space="preserve">
+    <value>Kiểm tra hoàn tất. Bấm Tạo RDP khi sẵn sàng.</value>
+  </data>
+  <data name="Preflight complete. No workflow has been started." xml:space="preserve">
+    <value>Kiểm tra hoàn tất. Chưa khởi chạy workflow.</value>
+  </data>
+  <data name="Preflight failed. Fix the checks above, then try again. No workflow was started." xml:space="preserve">
+    <value>Kiểm tra thất bại. Sửa các lỗi trên rồi thử lại. Chưa khởi chạy workflow.</value>
+  </data>
+  <data name="RDP Launcher" xml:space="preserve">
+    <value>RDP Launcher</value>
+  </data>
+  <data name="RDP Launcher v1.1.1 · Created by hn24987" xml:space="preserve">
+    <value>RDP Launcher v1.1.1 · Tạo bởi hn24987</value>
+  </data>
+  <data name="RDP Launcher v{0} · Created by hn24987" xml:space="preserve">
+    <value>RDP Launcher v{0} · Tạo bởi hn24987</value>
+  </data>
+  <data name="Receive command completed for {0}." xml:space="preserve">
+    <value>Yêu cầu nhận file đã hoàn tất cho {0}.</value>
+  </data>
+  <data name="Receive files" xml:space="preserve">
+    <value>Nhận file</value>
+  </data>
+  <data name="Receive files failed: {0}" xml:space="preserve">
+    <value>Không thể nhận file: {0}</value>
+  </data>
+  <data name="Receive request completed. Check the selected folder and Downloads if Tailscale already saved incoming files. An empty inbox does not mean files were backed up." xml:space="preserve">
+    <value>Yêu cầu nhận file đã hoàn tất. Kiểm tra thư mục đã chọn và Downloads nếu Tailscale đã lưu file đến. Hộp thư trống không có nghĩa là các file đã được sao lưu.</value>
+  </data>
+  <data name="Receiving files" xml:space="preserve">
+    <value>Đang nhận file</value>
+  </data>
+  <data name="Remaining: {0}" xml:space="preserve">
+    <value>Còn lại: {0}</value>
+  </data>
+  <data name="Repository URL" xml:space="preserve">
+    <value>URL kho mã</value>
+  </data>
+  <data name="Repository must use the owner/repo format." xml:space="preserve">
+    <value>Kho mã phải theo dạng owner/repo.</value>
+  </data>
+  <data name="Repository/workflow not found or your token does not have access. Select the repository when creating the token." xml:space="preserve">
+    <value>Không tìm thấy kho mã/workflow hoặc token không có quyền truy cập. Chọn đúng kho mã khi tạo token.</value>
+  </data>
+  <data name="Resume run" xml:space="preserve">
+    <value>Theo dõi phiên</value>
+  </data>
+  <data name="Run ID" xml:space="preserve">
+    <value>ID lần chạy</value>
+  </data>
+  <data name="Run ID: {0}" xml:space="preserve">
+    <value>ID lần chạy: {0}</value>
+  </data>
+  <data name="Run not found yet. Open Actions / logs or use Resume run to search again; do not dispatch again." xml:space="preserve">
+    <value>Chưa tìm thấy lần chạy. Mở Actions / nhật ký hoặc dùng Theo dõi phiên để tìm lại; không gửi yêu cầu tạo máy lần nữa.</value>
+  </data>
+  <data name="Runner availability, billing/quota, Auth Key validity, device approval and ACLs are confirmed only during startup/connection." xml:space="preserve">
+    <value>Tình trạng runner, thanh toán/quota, hiệu lực Auth Key, phê duyệt thiết bị và ACL chỉ được xác nhận khi khởi tạo/kết nối.</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
+  <data name="Save your files" xml:space="preserve">
+    <value>Hãy lưu file của bạn</value>
+  </data>
+  <data name="Saved GitHub token loaded" xml:space="preserve">
+    <value>Đã nạp token GitHub đã lưu</value>
+  </data>
+  <data name="Secrets" xml:space="preserve">
+    <value>Secrets</value>
+  </data>
+  <data name="Select your preferred language. Changes apply immediately." xml:space="preserve">
+    <value>Chọn ngôn ngữ bạn muốn. Thay đổi có hiệu lực ngay.</value>
+  </data>
+  <data name="Send selected files from the remote machine with Tailscale first, then choose a local folder to receive them. Taildrop requires both devices to belong to the same Tailscale user." xml:space="preserve">
+    <value>Gửi các file đã chọn từ máy từ xa bằng Tailscale trước, rồi chọn thư mục trên máy này để nhận. Taildrop yêu cầu hai thiết bị thuộc cùng người dùng Tailscale.</value>
+  </data>
+  <data name="Send selected remote files through Taildrop first. This receives this PC's inbox; it does not browse the remote filesystem." xml:space="preserve">
+    <value>Trước tiên, hãy gửi các file đã chọn từ máy từ xa qua Taildrop. Chức năng này nhận file trong hộp thư của máy này; không duyệt hệ thống file từ xa.</value>
+  </data>
+  <data name="Session (minutes)" xml:space="preserve">
+    <value>Thời lượng (phút)</value>
+  </data>
+  <data name="Session ending soon" xml:space="preserve">
+    <value>Phiên sắp kết thúc</value>
+  </data>
+  <data name="Session ends in {0:hh\:mm\:ss}" xml:space="preserve">
+    <value>Phiên kết thúc sau {0:hh\:mm\:ss}</value>
+  </data>
+  <data name="Session expired" xml:space="preserve">
+    <value>Phiên đã hết hạn</value>
+  </data>
+  <data name="Session expired. The remote machine may have stopped. Save files before future sessions end." xml:space="preserve">
+    <value>Phiên đã hết hạn. Máy từ xa có thể đã dừng. Hãy lưu file trước khi các phiên sau kết thúc.</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="Signed in as {0} · token saved" xml:space="preserve">
+    <value>Đã đăng nhập {0} · token đã lưu</value>
+  </data>
+  <data name="Source: github.com/hn24987/RDP-Launcher" xml:space="preserve">
+    <value>Mã nguồn: github.com/hn24987/RDP-Launcher</value>
+  </data>
+  <data name="Stop monitoring" xml:space="preserve">
+    <value>Ngừng theo dõi</value>
+  </data>
+  <data name="Stop requested. Check the final status in Actions / logs." xml:space="preserve">
+    <value>Đã yêu cầu dừng. Kiểm tra trạng thái cuối trong Actions / nhật ký.</value>
+  </data>
+  <data name="Stop session" xml:space="preserve">
+    <value>Dừng phiên</value>
+  </data>
+  <data name="Stop workflow" xml:space="preserve">
+    <value>Dừng workflow</value>
+  </data>
+  <data name="Stop workflow {0}? This will disconnect the RDP session." xml:space="preserve">
+    <value>Dừng workflow {0}? Thao tác này sẽ ngắt phiên RDP.</value>
+  </data>
+  <data name="TCP 3389 is not reachable yet. Check the tailnet, device approval and ACLs/grants for port 3389. The runner IP is available; retry after fixing access." xml:space="preserve">
+    <value>Chưa truy cập được TCP 3389. Kiểm tra tailnet, phê duyệt thiết bị và ACL/grants cho cổng 3389. Đã có IP runner; thử lại sau khi sửa quyền truy cập.</value>
+  </data>
+  <data name="Tailscale UI not found. Install it first, or open Tailscale from the Windows Start menu." xml:space="preserve">
+    <value>Không tìm thấy giao diện Tailscale. Hãy cài Tailscale hoặc mở từ menu Start của Windows.</value>
+  </data>
+  <data name="Tailscale could not receive files. Check that both devices are online, owned by the same user, and allowed to use Taildrop." xml:space="preserve">
+    <value>Tailscale không nhận được file. Kiểm tra hai thiết bị trực tuyến, thuộc cùng người dùng và được phép dùng Taildrop.</value>
+  </data>
+  <data name="Tailscale is installed but did not respond within 12 seconds. Open Tailscale and check that its service is running." xml:space="preserve">
+    <value>Tailscale đã cài nhưng không phản hồi trong 12 giây. Mở Tailscale và kiểm tra dịch vụ đang chạy.</value>
+  </data>
+  <data name="Tailscale is installed but its service is unavailable or you are signed out. Open Tailscale, start its service/connect, then retry." xml:space="preserve">
+    <value>Tailscale đã cài nhưng dịch vụ chưa hoạt động hoặc chưa đăng nhập. Mở Tailscale, bật dịch vụ/kết nối rồi thử lại.</value>
+  </data>
+  <data name="Tailscale is installed but not signed in. Open Tailscale and sign in to the same tailnet as your Auth Key." xml:space="preserve">
+    <value>Tailscale đã cài nhưng chưa đăng nhập. Mở Tailscale và đăng nhập cùng tailnet với Auth Key.</value>
+  </data>
+  <data name="Tailscale is installed but switched off. Open Tailscale, choose Connect, then retry." xml:space="preserve">
+    <value>Tailscale đã cài nhưng đang tắt. Mở Tailscale, chọn Connect rồi thử lại.</value>
+  </data>
+  <data name="Tailscale is not installed or its CLI could not be found." xml:space="preserve">
+    <value>Chưa cài Tailscale hoặc không tìm thấy CLI.</value>
+  </data>
+  <data name="Tailscale is not installed or its CLI could not be found. Click Install Tailscale, install it, and sign in." xml:space="preserve">
+    <value>Chưa cài Tailscale hoặc không tìm thấy CLI. Bấm Cài Tailscale, cài đặt rồi đăng nhập.</value>
+  </data>
+  <data name="Tailscale is not ready (state: {0}). Open Tailscale, check its service, and connect." xml:space="preserve">
+    <value>Tailscale chưa sẵn sàng (trạng thái: {0}). Mở Tailscale, kiểm tra dịch vụ rồi kết nối.</value>
+  </data>
+  <data name="Tailscale is running but this device is offline. Check your network and reconnect Tailscale." xml:space="preserve">
+    <value>Tailscale đang chạy nhưng thiết bị đang ngoại tuyến. Kiểm tra mạng và kết nối lại Tailscale.</value>
+  </data>
+  <data name="Tailscale returned an unreadable status. Open Tailscale and check its service/login." xml:space="preserve">
+    <value>Tailscale trả về trạng thái không đọc được. Mở Tailscale để kiểm tra dịch vụ và đăng nhập.</value>
+  </data>
+  <data name="Target: {0} · write access and project membership will be verified with GitHub." xml:space="preserve">
+    <value>Đích: {0} · sẽ kiểm tra quyền ghi và dự án qua GitHub.</value>
+  </data>
+  <data name="The expected session end has been reached. Check Actions / logs for the actual workflow status." xml:space="preserve">
+    <value>Đã đến thời gian dự kiến kết thúc phiên. Kiểm tra Actions / nhật ký để biết trạng thái workflow thực tế.</value>
+  </data>
+  <data name="The latest release does not contain a supported stable version tag." xml:space="preserve">
+    <value>Bản phát hành mới nhất không có thẻ phiên bản ổn định được hỗ trợ.</value>
+  </data>
+  <data name="The previous request may already have created a machine. Have you checked Actions and still want to discard the saved request ID?" xml:space="preserve">
+    <value>Yêu cầu trước có thể đã tạo máy. Bạn đã kiểm tra Actions và vẫn muốn bỏ ID yêu cầu đã lưu?</value>
+  </data>
+  <data name="The release does not contain a version tag." xml:space="preserve">
+    <value>Bản phát hành không có thẻ phiên bản.</value>
+  </data>
+  <data name="The release page URL is not a trusted project release URL." xml:space="preserve">
+    <value>URL trang phát hành không phải địa chỉ phát hành đáng tin cậy của dự án.</value>
+  </data>
+  <data name="The saved token cannot be decrypted. Enter it again for this Windows account." xml:space="preserve">
+    <value>Không thể giải mã token đã lưu. Hãy nhập lại cho tài khoản Windows này.</value>
+  </data>
+  <data name="The selected destination folder no longer exists." xml:space="preserve">
+    <value>Thư mục nhận file đã chọn không còn tồn tại.</value>
+  </data>
+  <data name="The token is encrypted for your Windows account and saved as github-token.dat next to this EXE. Next time, it loads automatically. Keep the app in a writable folder. Moving it to another Windows account requires signing in again." xml:space="preserve">
+    <value>Token được mã hóa cho tài khoản Windows và lưu trong github-token.dat cạnh EXE. App tự nạp ở lần mở sau. Đặt app trong thư mục có quyền ghi. Chuyển sang tài khoản Windows khác sẽ cần nhập token lại.</value>
+  </data>
+  <data name="This RDP session has expired." xml:space="preserve">
+    <value>Phiên RDP này đã hết hạn.</value>
+  </data>
+  <data name="This device needs approval. Approve it in the Tailscale admin console, then retry." xml:space="preserve">
+    <value>Thiết bị này cần phê duyệt. Phê duyệt trong trang quản trị Tailscale rồi thử lại.</value>
+  </data>
+  <data name="This fork does not belong to the hn24987/RDP-Launcher fork network." xml:space="preserve">
+    <value>Bản fork này không thuộc dự án hn24987/RDP-Launcher.</value>
+  </data>
+  <data name="This pending request belongs to a different fork. Restore its fork URL before resuming." xml:space="preserve">
+    <value>Yêu cầu đang chờ thuộc bản fork khác. Khôi phục URL fork đó trước khi theo dõi lại.</value>
+  </data>
+  <data name="This repository is archived. Unarchive it before running workflows." xml:space="preserve">
+    <value>Kho mã này đã lưu trữ. Bỏ lưu trữ trước khi chạy workflow.</value>
+  </data>
+  <data name="This repository is disabled by GitHub." xml:space="preserve">
+    <value>Kho mã này đã bị GitHub vô hiệu hóa.</value>
+  </data>
+  <data name="This run does not belong to main.yml." xml:space="preserve">
+    <value>Lần chạy này không thuộc main.yml.</value>
+  </data>
+  <data name="This run has multiple connection artifacts. Refusing to guess the session." xml:space="preserve">
+    <value>Lần chạy này có nhiều artifact kết nối. Không thể tự chọn phiên.</value>
+  </data>
+  <data name="Tiếng Việt" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="Update available" xml:space="preserve">
+    <value>Có bản cập nhật</value>
+  </data>
+  <data name="Update check cancelled or timed out." xml:space="preserve">
+    <value>Kiểm tra cập nhật đã bị hủy hoặc hết thời gian chờ.</value>
+  </data>
+  <data name="Update check failed (GitHub HTTP {0}). Check your connection or GitHub API limits and try again." xml:space="preserve">
+    <value>Không thể kiểm tra cập nhật (GitHub HTTP {0}). Kiểm tra mạng hoặc giới hạn API GitHub rồi thử lại.</value>
+  </data>
+  <data name="Update check failed: {0}" xml:space="preserve">
+    <value>Không thể kiểm tra cập nhật: {0}</value>
+  </data>
+  <data name="Use a repository you control. Owners can use hn24987/RDP-Launcher directly; other users should fork the project. Enable Actions and add the required secrets." xml:space="preserve">
+    <value>Dùng kho mã bạn có quyền quản lý. Chủ dự án có thể dùng trực tiếp hn24987/RDP-Launcher; người dùng khác cần fork. Bật Actions và thêm secrets cần thiết.</value>
+  </data>
+  <data name="Use hn24987/RDP-Launcher if you have write access, or a fork of that project that you control." xml:space="preserve">
+    <value>Dùng hn24987/RDP-Launcher nếu bạn có quyền ghi, hoặc bản fork của dự án do bạn quản lý.</value>
+  </data>
+  <data name="Use the repository URL, not an Actions, branch, or file URL." xml:space="preserve">
+    <value>Dùng URL kho mã, không dùng URL trang Actions, nhánh hoặc file.</value>
+  </data>
+  <data name="Validate and save token" xml:space="preserve">
+    <value>Xác thực và lưu token</value>
+  </data>
+  <data name="Validating token with GitHub…" xml:space="preserve">
+    <value>Đang xác thực token với GitHub…</value>
+  </data>
+  <data name="Version {0} is available. You are using {1}. Open the release page?" xml:space="preserve">
+    <value>Đã có phiên bản {0}. Bạn đang dùng {1}. Mở trang phát hành?</value>
+  </data>
+  <data name="Waited 25 minutes. Check the queue, quota, billing or approvals in Actions, then use Resume run." xml:space="preserve">
+    <value>Đã chờ 25 phút. Kiểm tra hàng đợi, quota, thanh toán hoặc phê duyệt trong Actions rồi dùng Theo dõi phiên.</value>
+  </data>
+  <data name="Workflow ended: {0}. See Actions / logs for details. Clear Run ID to start a new session." xml:space="preserve">
+    <value>Workflow đã kết thúc: {0}. Xem Actions / nhật ký để biết chi tiết. Xóa ID lần chạy để tạo phiên mới.</value>
+  </data>
+  <data name="Workflow: {0}" xml:space="preserve">
+    <value>Workflow: {0}</value>
+  </data>
+  <data name="You are up to date" xml:space="preserve">
+    <value>Bạn đang dùng bản mới nhất</value>
+  </data>
+  <data name="You are up to date ({0})." xml:space="preserve">
+    <value>Bạn đang dùng bản mới nhất ({0}).</value>
+  </data>
+  <data name="You are using the latest stable version ({0})." xml:space="preserve">
+    <value>Bạn đang dùng bản ổn định mới nhất ({0}).</value>
+  </data>
+  <data name="Your GitHub account must have write access to this repository. Check the repository owner and token repository selection." xml:space="preserve">
+    <value>Tài khoản GitHub cần quyền ghi vào kho mã này. Kiểm tra chủ kho mã và kho mã đã chọn cho token.</value>
+  </data>
+  <data name="Your RDP session has about {0} minutes left. Save your files now. Receive files via Taildrop before the session ends." xml:space="preserve">
+    <value>Phiên RDP còn khoảng {0} phút. Hãy lưu file ngay. Nhận file qua Taildrop trước khi phiên kết thúc.</value>
+  </data>
+  <data name="Your repository has an older workflow. Update .github/workflows/main.yml from this release." xml:space="preserve">
+    <value>Kho mã đang dùng workflow cũ. Cập nhật .github/workflows/main.yml từ bản phát hành này.</value>
+  </data>
+  <data name="Your session has about {0} minutes remaining. Save your files or use Receive files before it ends." xml:space="preserve">
+    <value>Phiên còn khoảng {0} phút. Hãy lưu file hoặc dùng Nhận file trước khi phiên kết thúc.</value>
+  </data>
+  <data name="Your token is invalid or expired. Use Change token to sign in again." xml:space="preserve">
+    <value>Token không hợp lệ hoặc đã hết hạn. Dùng Đổi token để đăng nhập lại.</value>
+  </data>
+  <data name="connection.json exceeds the allowed size." xml:space="preserve">
+    <value>connection.json vượt quá kích thước cho phép.</value>
+  </data>
+  <data name="main.yml is not active. Open the repository's Actions tab and enable the workflow." xml:space="preserve">
+    <value>main.yml chưa bật. Mở tab Actions của kho mã và bật workflow.</value>
+  </data>
+</root>

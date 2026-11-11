@@ -1,0 +1,56 @@
+name: Setup help
+description: Get help configuring GitHub Actions, Tailscale or RDP.
+title: "[Setup] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read docs/SETUP.md first. This is a public issue: share secret names and error messages only, never secret values or github-token.dat. Do not upload personal files received with Taildrop.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where are you stuck?
+      options:
+        - GitHub token or repository access
+        - Workflow or repository secrets
+        - Tailscale installation/login/connectivity
+        - RDP sign-in or network access
+        - Taildrop file transfer
+        - Download or SmartScreen
+        - Other setup question
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Launcher version and architecture
+      placeholder: "v1.2.0, win-x64"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Windows and Tailscale versions
+    validations:
+      required: true
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What have you set up so far?
+      description: List completed steps without including any token, key or password values.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happens, and what did you expect?
+      description: Paste a redacted error or describe the failing check. Screenshots are optional.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Before submitting
+      options:
+        - label: I removed tokens, keys, passwords and private data from this request.
+          required: true

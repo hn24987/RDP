@@ -108,6 +108,8 @@ jobs:
           Write-Host 'Username: RDP'
           Write-Host 'Password: use the value saved in your RDP_PASSWORD repository secret.'
           $now = [DateTimeOffset]::UtcNow
+          $expires = $now.AddMinutes([int]$env:DURATION).ToString('o')
+          "SESSION_EXPIRES_AT=$expires" >> $env:GITHUB_ENV
           @{
             protocol = 1
             request_id = $env:REQUEST_ID
@@ -115,7 +117,7 @@ jobs:
             ip = $env:TAILSCALE_IP
             username = 'RDP'
             ready_at = $now.ToString('o')
-            expires_at = $now.AddMinutes([int]$env:DURATION).ToString('o')
+            expires_at = $expires
           } | ConvertTo-Json | Set-Content "$env:RUNNER_TEMP\connection.json" -Encoding utf8
 
       - name: Upload connection info
@@ -131,7 +133,7 @@ jobs:
         env:
           DURATION: ${{ inputs.duration_minutes }}
         run: |
-          $end = [DateTimeOffset]::UtcNow.AddMinutes([int]$env:DURATION)
+          $end = [DateTimeOffset]::Parse($env:SESSION_EXPIRES_AT)
           while ([DateTimeOffset]::UtcNow -lt $end) { Start-Sleep 15 }
 
       - name: Disconnect Tailscale

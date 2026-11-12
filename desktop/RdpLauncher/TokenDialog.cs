@@ -35,7 +35,7 @@ public sealed class TokenDialog : Form
         content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         for (var i = 0; i < 8; i++) content.RowStyles.Add(new RowStyle(i == 5 ? SizeType.Percent : SizeType.AutoSize, i == 5 ? 100 : 0));
         content.Controls.Add(Theme.Label(L.T("Personal access token"), 12, true));
-        var permissions = Theme.Label(L.T("Choose your repository. Required permissions: Actions — Read and write; Contents and Administration — Read-only; Secrets — Read and write for custom RDP passwords."), 9.5f, color: Theme.Muted);
+        var permissions = Theme.Label(L.T("Choose your repository. Permissions: Actions — Read and write; Contents and Administration — Read-only; Secrets — Read-only (Read and write for custom passwords)."), 9.5f, color: Theme.Muted);
         permissions.MaximumSize = new Size(510, 0);
         content.Controls.Add(permissions);
         var link = new LinkLabel { Text = L.T("Create a GitHub token"), AutoSize = true, Margin = new Padding(0, 3, 0, 16) };

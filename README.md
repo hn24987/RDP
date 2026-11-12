@@ -14,7 +14,7 @@ Create a Windows desktop on GitHub Actions, access it through Tailscale, and con
 
 **Windows 10 / 11 · x64 & ARM64 builds · English / Tiếng Việt · No installer required**
 
-The features below describe the current source. Older release downloads may not yet include ARM64, language settings, countdown reminders or file reception; use a build artifact from the matching source or a release that includes them.
+The features below describe the current source. Older release downloads may not yet include the dark dashboard or optional password field; use a build artifact from the matching source or a release that includes them.
 
 </div>
 
@@ -57,6 +57,7 @@ When the machine is ready, click **Open Remote Desktop** and sign in. The launch
 
 ## What you get
 
+- **A dark workspace.** Separate connection, session, file transfer and activity cards, with English on first launch.
 - **One place to launch and connect.** Start the workflow, see its progress, copy the IP, and open Remote Desktop.
 - **Checks before startup.** Find missing secrets, disabled workflows, or GitHub access problems before starting a session.
 - **Tailscale readiness checks.** See whether Tailscale is installed, signed in, connected, and online.

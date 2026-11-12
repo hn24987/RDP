@@ -182,7 +182,9 @@ public sealed class LauncherForm : Form
     }
     static TableLayoutPanel Stack()
     {
-        return new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, BackColor = Color.Transparent, Margin = Padding.Empty };
+        var stack = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, BackColor = Color.Transparent, Margin = Padding.Empty };
+        stack.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        return stack;
     }
     static void Item(TableLayoutPanel stack, Control control, float height = 0)
     {
@@ -214,6 +216,7 @@ public sealed class LauncherForm : Form
         var sidebar = new Panel { Dock = DockStyle.Fill, BackColor = Color.FromArgb(8, 13, 24), Padding = new Padding(20, 26, 20, 20) };
         shell.Controls.Add(sidebar, 0, 0);
         var side = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 10, BackColor = Color.Transparent };
+        side.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         for (int i = 0; i < 10; i++) side.RowStyles.Add(new RowStyle(i == 6 ? SizeType.Percent : SizeType.AutoSize, i == 6 ? 100 : 0));
         sidebar.Controls.Add(side);
         var brand = LabelText("RDP", 30, true, Theme.Accent); brand.Margin = Padding.Empty;
@@ -223,7 +226,7 @@ public sealed class LauncherForm : Form
         var nav = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, WrapContents = false, BackColor = Color.Transparent };
         foreach (var name in new[] { "Overview", "Connection", "Files", "Activity" })
         {
-            var button = Theme.Button(name); button.Width = 168; button.Height = 44; button.AutoSize = false; button.Margin = new Padding(0, 0, 0, 7);
+            var button = Theme.Button(name); button.Width = 160; button.Height = 44; button.AutoSize = false; button.Margin = new Padding(0, 0, 0, 7);
             if (button is RoundedButton rounded) rounded.Selected = name == "Overview";
             navigation.Add((button, name));
             button.Click += (_, _) => Navigate(name);
@@ -233,7 +236,7 @@ public sealed class LauncherForm : Form
         var source = Link("Source code", RepositoryAddress.SourceUrl); source.Margin = new Padding(0, 26, 0, 6); side.Controls.Add(source, 0, 4);
         side.Controls.Add(Link("Setup guide", RepositoryAddress.SourceUrl + "/blob/main/docs/SETUP.md"), 0, 5);
         var footer = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, FlowDirection = FlowDirection.TopDown, WrapContents = false, BackColor = Color.Transparent };
-        foreach (var button in new[] { updates, settings }) { button.Width = 168; button.Height = 40; button.AutoSize = false; button.Margin = new Padding(0, 0, 0, 8); footer.Controls.Add(button); }
+        foreach (var button in new[] { updates, settings }) { button.Width = 160; button.Height = 40; button.AutoSize = false; button.Margin = new Padding(0, 0, 0, 8); footer.Controls.Add(button); }
         footer.Controls.Add(LabelText("made by hn24987", 9, false, Theme.Muted));
         footer.Controls.Add(LabelText("v" + AppVersion.Current, 8, false, Theme.Purple));
         side.Controls.Add(footer, 0, 7);

@@ -24,9 +24,10 @@ internal static class Program
         using(form)
         using(var timer=new System.Windows.Forms.Timer{Interval=650})
         {
-            var intendedSize = form.Size;
+            var intendedSize = form is LauncherForm ? new Size(1320, 940) : form.Size;
             // Hosted Windows desktops can be only 1024px wide. Startup clamps
             // the window to that screen; restore the requested size once shown.
+            form.MaximumSize = intendedSize;
             form.Shown += (_, _) => form.Size = intendedSize;
             int ticks=0;
             timer.Tick+=(_,_)=>{

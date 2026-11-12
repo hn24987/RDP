@@ -222,9 +222,6 @@ Repository permissions: Actions — Read and write; Contents, Secrets, Administr
   <data name="Files received in {0}." xml:space="preserve">
     <value>Files received in {0}.</value>
   </data>
-  <data name="First run: select the source repository (with write access) or your fork. Enable Actions and add TAILSCALE_AUTH_KEY and RDP_PASSWORD. Forks do not inherit secrets." xml:space="preserve">
-    <value>First run: select the source repository (with write access) or your fork. Enable Actions and add TAILSCALE_AUTH_KEY and RDP_PASSWORD. Forks do not inherit secrets.</value>
-  </data>
   <data name="Forget token" xml:space="preserve">
     <value>Forget token</value>
   </data>
@@ -239,9 +236,6 @@ Repository permissions: Actions — Read and write; Contents, Secrets, Administr
   </data>
   <data name="Get RDP" xml:space="preserve">
     <value>Get RDP</value>
-  </data>
-  <data name="Get RDP runs preflight automatically. When ready, open Remote Desktop and sign in as .\RDP with your RDP_PASSWORD secret. Match any certificate prompt to the displayed IP. Closing this app does not stop your workflow. Your token is encrypted and saved beside the EXE." xml:space="preserve">
-    <value>Get RDP runs preflight automatically. When ready, open Remote Desktop and sign in as .\RDP with your RDP_PASSWORD secret. Match any certificate prompt to the displayed IP. Closing this app does not stop your workflow. Your token is encrypted and saved beside the EXE.</value>
   </data>
   <data name="GitHub HTTP {0}: {1}" xml:space="preserve">
     <value>GitHub HTTP {0}: {1}</value>
@@ -347,17 +341,11 @@ Expected end: {2} (your local time)</value>
   <data name="PASS · Signed in as {0}; verified your RDP repository; default branch: {1}" xml:space="preserve">
     <value>PASS · Signed in as {0}; verified your RDP repository; default branch: {1}</value>
   </data>
-  <data name="PASS · TAILSCALE_AUTH_KEY and RDP_PASSWORD exist (values cannot be read back)" xml:space="preserve">
-    <value>PASS · TAILSCALE_AUTH_KEY and RDP_PASSWORD exist (values cannot be read back)</value>
-  </data>
   <data name="PASS · Tailscale is installed" xml:space="preserve">
     <value>PASS · Tailscale is installed</value>
   </data>
   <data name="PASS · Tailscale service is responding, connected and online. Use the same tailnet as the runner Auth Key." xml:space="preserve">
     <value>PASS · Tailscale service is responding, connected and online. Use the same tailnet as the runner Auth Key.</value>
-  </data>
-  <data name="PASS · The runner has enabled RDP. Use the password you set in the RDP_PASSWORD secret." xml:space="preserve">
-    <value>PASS · The runner has enabled RDP. Use the password you set in the RDP_PASSWORD secret.</value>
   </data>
   <data name="PASS · Workflow is active and supports the launcher" xml:space="preserve">
     <value>PASS · Workflow is active and supports the launcher</value>
@@ -705,8 +693,8 @@ Expected end: {1}</value>
   <data name="The session is ready. Its temporary password secret may need manual removal in GitHub Settings." xml:space="preserve">
     <value>The session is ready. Its temporary password secret may need manual removal in GitHub Settings.</value>
   </data>
-  <data name="Choose your repository. Required permissions: Actions — Read and write; Contents and Administration — Read-only; Secrets — Read and write for custom RDP passwords." xml:space="preserve">
-    <value>Choose your repository. Required permissions: Actions — Read and write; Contents and Administration — Read-only; Secrets — Read and write for custom RDP passwords.</value>
+  <data name="Choose your repository. Permissions: Actions — Read and write; Contents and Administration — Read-only; Secrets — Read-only (Read and write for custom passwords)." xml:space="preserve">
+    <value>Choose your repository. Permissions: Actions — Read and write; Contents and Administration — Read-only; Secrets — Read-only (Read and write for custom passwords).</value>
   </data>
   <data name="First run: select your repository, enable Actions and add TAILSCALE_AUTH_KEY. Leave the session password blank to use 123456." xml:space="preserve">
     <value>First run: select your repository, enable Actions and add TAILSCALE_AUTH_KEY. Leave the session password blank to use 123456.</value>

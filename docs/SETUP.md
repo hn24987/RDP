@@ -14,7 +14,7 @@ Set up a repository you control once, then use **Get RDP** to start future sessi
 4. Install Tailscale on your Windows PC: https://tailscale.com/download/windows. Sign in to the **same tailnet** as the Auth Key, connect, and ensure your PC is online. ACLs/grants must allow your PC to access the runner on **TCP 3389**.
 5. Create a **fine-grained GitHub personal access token**: https://github.com/settings/personal-access-tokens/new.
    - Select the owner of your fork, then select **only your fork** under repository access.
-   - Repository permissions: **Actions: Read and write**, **Contents: Read-only**, **Secrets: Read and write** (for custom RDP passwords), **Administration: Read-only**. Metadata is automatic.
+   - Repository permissions: **Actions: Read and write**, **Contents: Read-only**, **Secrets: Read-only** (or **Read and write** for custom RDP passwords), **Administration: Read-only**. Metadata is automatic.
    - Complete organization approval/SSO if applicable. Your GitHub account must have write access to the fork.
    - Administration read checks whether Actions is enabled; Secrets read checks secret names. The launcher does not require Contents write and does not push changes to GitHub.
 

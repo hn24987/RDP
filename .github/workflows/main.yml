@@ -80,7 +80,8 @@ jobs:
       - name: Configure secure RDP
         shell: pwsh
         env:
-          RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
+          SESSION_PASSWORD: ${{ inputs.password_secret && secrets[inputs.password_secret] || '' }}
+          PASSWORD_SECRET_NAME: ${{ inputs.password_secret }}
         run: |
           $ErrorActionPreference = 'Stop'
           # Allow the password chosen by the owner on this temporary, Tailscale-only runner.

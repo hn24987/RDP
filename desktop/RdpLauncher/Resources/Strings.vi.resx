@@ -708,4 +708,10 @@ Dự kiến kết thúc: {1}</value>
   <data name="Choose your repository. Required permissions: Actions — Read and write; Contents and Administration — Read-only; Secrets — Read and write for custom RDP passwords." xml:space="preserve">
     <value>Chọn kho mã. Cần quyền Actions đọc/ghi; Contents và Administration chỉ đọc; Secrets đọc/ghi nếu đặt mật khẩu RDP riêng.</value>
   </data>
+  <data name="First run: select your repository, enable Actions and add TAILSCALE_AUTH_KEY. Leave the session password blank to use 123456." xml:space="preserve">
+    <value>Lần đầu: chọn kho mã, bật Actions và thêm TAILSCALE_AUTH_KEY. Để trống mật khẩu phiên để dùng 123456.</value>
+  </data>
+  <data name="Session password (optional)" xml:space="preserve">
+    <value>Mật khẩu phiên (tùy chọn)</value>
+  </data>
 </root>

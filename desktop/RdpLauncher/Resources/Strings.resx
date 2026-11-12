@@ -708,4 +708,10 @@ Expected end: {1}</value>
   <data name="Choose your repository. Required permissions: Actions — Read and write; Contents and Administration — Read-only; Secrets — Read and write for custom RDP passwords." xml:space="preserve">
     <value>Choose your repository. Required permissions: Actions — Read and write; Contents and Administration — Read-only; Secrets — Read and write for custom RDP passwords.</value>
   </data>
+  <data name="First run: select your repository, enable Actions and add TAILSCALE_AUTH_KEY. Leave the session password blank to use 123456." xml:space="preserve">
+    <value>First run: select your repository, enable Actions and add TAILSCALE_AUTH_KEY. Leave the session password blank to use 123456.</value>
+  </data>
+  <data name="Session password (optional)" xml:space="preserve">
+    <value>Session password (optional)</value>
+  </data>
 </root>

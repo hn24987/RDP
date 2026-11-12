@@ -21,7 +21,7 @@ public sealed class GitHubClient : IDisposable
         http = handler is null ? new HttpClient() : new HttpClient(handler);
         http.BaseAddress = new Uri("https://api.github.com/");
         http.Timeout = TimeSpan.FromSeconds(45);
-        http.DefaultRequestHeaders.UserAgent.ParseAdd("RdpLauncher/1.1");
+        http.DefaultRequestHeaders.UserAgent.ParseAdd("RdpLauncher/1.3");
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Trim());
         http.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
         http.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
@@ -103,7 +103,7 @@ public sealed class GitHubClient : IDisposable
         if ((await workflowTask).GetProperty("state").GetString() != "active")
             throw new InvalidOperationException(L.T("main.yml is not active. Open the repository's Actions tab and enable the workflow."));
         var yaml = Encoding.UTF8.GetString(Convert.FromBase64String((await sourceTask).GetProperty("content").GetString()!));
-        if (!yaml.Contains("RDP_LAUNCHER_PROTOCOL_V1") || !yaml.Contains("workflow_dispatch:"))
+        if (!yaml.Contains("RDP_LAUNCHER_PROTOCOL_V1") || !yaml.Contains("workflow_dispatch:") || !yaml.Contains("password_secret:"))
             throw new InvalidOperationException(L.T("Your repository has an older workflow. Update .github/workflows/main.yml from this release."));
         log(L.T("PASS · Workflow is active and supports the launcher"));
         var names = new HashSet<string>();
@@ -144,8 +144,11 @@ public sealed class GitHubClient : IDisposable
     }
     public async Task DeletePassword(string requestId, CancellationToken ct)
     {
-        if (Regex.IsMatch(requestId, "^[A-F0-9]{32}$"))
-            await Request(HttpMethod.Delete, $"{repo}/actions/secrets/RDP_PASSWORD_{requestId}", null, ct);
+        if (!Regex.IsMatch(requestId, "^[A-F0-9]{32}$")) return;
+        using var message = new HttpRequestMessage(HttpMethod.Delete, $"{repo}/actions/secrets/RDP_PASSWORD_{requestId}");
+        using var response = await http.SendAsync(message, ct);
+        if (response.StatusCode != HttpStatusCode.NotFound && !response.IsSuccessStatusCode)
+            throw new InvalidOperationException("Could not remove the temporary password secret.");
     }
     public Task<JsonElement> Dispatch(string branch, string requestId, int minutes, CancellationToken ct, string passwordSecret = "") =>
         Request(HttpMethod.Post, $"{repo}/actions/workflows/main.yml/dispatches",

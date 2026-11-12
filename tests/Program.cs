@@ -54,7 +54,7 @@ await AsyncTest("preflight rejects missing secret before dispatch", async () =>
             "/repos/owner/repo" => new { archived = false, fork = true, source = new { full_name = "hn24987/RDP-Launcher" }, permissions = new { push = true }, default_branch = "main" },
             "/repos/owner/repo/actions/permissions" => new { enabled = true },
             "/repos/owner/repo/actions/workflows/main.yml" => new { state = "active" },
-            "/repos/owner/repo/contents/.github/workflows/main.yml" => new { content = Convert.ToBase64String(Encoding.UTF8.GetBytes("workflow_dispatch: RDP_LAUNCHER_PROTOCOL_V1")) },
+            "/repos/owner/repo/contents/.github/workflows/main.yml" => new { content = Convert.ToBase64String(Encoding.UTF8.GetBytes("workflow_dispatch: password_secret: RDP_LAUNCHER_PROTOCOL_V1")) },
             "/repos/owner/repo/actions/workflows/main.yml/runs" => new { workflow_runs = Array.Empty<object>() },
             "/repos/owner/repo/actions/secrets" => new { secrets = new[] { new { name = "SOMETHING_ELSE" } } },
             _ => throw new Exception("Unexpected request")
@@ -130,8 +130,8 @@ await AsyncTest("preflight success uses GET only and returns default branch", as
             "/repos/owner/repo" => new { archived = false, fork = true, source = new { full_name = "hn24987/RDP-Launcher" }, permissions = new { push = true }, default_branch = "develop" },
             "/repos/owner/repo/actions/permissions" => new { enabled = true },
             "/repos/owner/repo/actions/workflows/main.yml" => new { state = "active" },
-            "/repos/owner/repo/contents/.github/workflows/main.yml" => new { content = Convert.ToBase64String(Encoding.UTF8.GetBytes("workflow_dispatch: RDP_LAUNCHER_PROTOCOL_V1")) },
-            "/repos/owner/repo/actions/secrets" => new { secrets = new[] { new { name = "TAILSCALE_AUTH_KEY" }, new { name = "RDP_PASSWORD" } } },
+            "/repos/owner/repo/contents/.github/workflows/main.yml" => new { content = Convert.ToBase64String(Encoding.UTF8.GetBytes("workflow_dispatch: password_secret: RDP_LAUNCHER_PROTOCOL_V1")) },
+            "/repos/owner/repo/actions/secrets" => new { secrets = new[] { new { name = "TAILSCALE_AUTH_KEY" } } },
             "/repos/owner/repo/actions/workflows/main.yml/runs" => new { workflow_runs = Array.Empty<object>() },
             _ => throw new Exception("Unexpected request")
         };
@@ -153,13 +153,18 @@ await AsyncTest("custom short password is sealed and never sent in clear", async
    if(req.Method == HttpMethod.Get) return Json(new { key = Convert.ToBase64String(keys.PublicKey), key_id = "key1" });
    Assert(req.Method == HttpMethod.Put && req.RequestUri!.AbsolutePath.EndsWith("RDP_PASSWORD_"+request));
    var text = await req.Content!.ReadAsStringAsync();
-   Assert(!text.Contains("my-short-password"));
+   Assert(!text.Contains("\"a\""));
    using var doc = JsonDocument.Parse(text);
    var plain = Sodium.SealedPublicKeyBox.Open(Convert.FromBase64String(doc.RootElement.GetProperty("encrypted_value").GetString()!),keys);
-   Assert(Encoding.UTF8.GetString(plain) == "my-short-password");
+   Assert(Encoding.UTF8.GetString(plain) == "a");
    return new HttpResponseMessage(HttpStatusCode.Created);
  }));
- Assert(await api.PreparePassword(request,"my-short-password",CancellationToken.None) == "RDP_PASSWORD_"+request);
+ Assert(await api.PreparePassword(request,"a",CancellationToken.None) == "RDP_PASSWORD_"+request);
+});
+await AsyncTest("already deleted temporary password secret is harmless", async () =>
+{
+ using var api = new GitHubClient("owner/repo","test",new FakeHandler(_=>Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound))));
+ await api.DeletePassword("0123456789ABCDEF0123456789ABCDEF",CancellationToken.None);
 });
 Console.WriteLine($"{passed} tests passed.");
 static HttpResponseMessage Json(object data) => new(HttpStatusCode.OK) { Content = new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json") };

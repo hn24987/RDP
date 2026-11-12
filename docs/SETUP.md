@@ -72,7 +72,7 @@ Independent GitHub and local checks run in parallel. Before dispatch, the app ch
 - Tailscale installed; CLI/service responsive; signed in, switched on and online. Messages distinguish signed-out, switched-off, device-approval and offline states. Use **Install Tailscale** or **Open Tailscale** to fix setup.
 - After startup: connection artifact matches its run/request, its IP is in the Tailscale range, its session has not expired, and your PC can reach TCP 3389.
 
-GitHub does not reveal secret values. Preflight cannot prove an Auth Key is still valid, the password meets Windows policy, ACLs allow access, devices are approved, runner quota/billing is sufficient, or all runtime policies allow execution. The runner and connection checks confirm those later. Actions write permission is confirmed by the actual dispatch, not by a read request. The app never silently repeats a dispatch after an uncertain network response.
+GitHub does not reveal secret values. Preflight cannot prove an Auth Key is still valid, ACLs allow access, devices are approved, runner quota/billing is sufficient, or all runtime policies allow execution. The runner and connection checks confirm those later. Actions write permission is confirmed by the actual dispatch, not by a read request. The app never silently repeats a dispatch after an uncertain network response.
 
 ## Token storage
 

@@ -8,6 +8,11 @@ on:
         description: 'Optional session ID — leave empty when running manually'
         required: false
         type: string
+      password_secret:
+        description: 'Optional repository secret name for a custom password; leave blank to use 123456'
+        required: false
+        default: ''
+        type: string
       duration_minutes:
         description: 'Session duration, 10–300 minutes'
         default: '60'
@@ -26,7 +31,8 @@ jobs:
         shell: pwsh
         env:
           TS_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
-          RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
+          SESSION_PASSWORD: ${{ inputs.password_secret && secrets[inputs.password_secret] || '' }}
+          PASSWORD_SECRET_NAME: ${{ inputs.password_secret }}
           REQUEST_ID: ${{ inputs.request_id || github.run_id }}
           DURATION: ${{ inputs.duration_minutes }}
         run: |
@@ -37,10 +43,11 @@ jobs:
             throw 'duration_minutes must be 10–300.'
           }
           if (-not $env:TS_AUTH_KEY) { throw 'Missing TAILSCALE_AUTH_KEY secret.' }
-          if ($env:RDP_PASSWORD.Length -lt 14 -or $env:RDP_PASSWORD -cnotmatch '[A-Z]' -or
-              $env:RDP_PASSWORD -cnotmatch '[a-z]' -or $env:RDP_PASSWORD -notmatch '[0-9]' -or
-              $env:RDP_PASSWORD -notmatch '[^a-zA-Z0-9]') {
-            throw 'RDP_PASSWORD must have 14+ characters, upper/lowercase, number and symbol.'
+          if ($env:PASSWORD_SECRET_NAME -and $env:PASSWORD_SECRET_NAME -notmatch '^RDP_PASSWORD(?:_[A-F0-9]{32})?$') {
+            throw 'Invalid password secret name.'
+          }
+          if ($env:PASSWORD_SECRET_NAME -and -not $env:SESSION_PASSWORD) {
+            throw 'The selected password secret is missing. Leave password_secret blank to use 123456.'
           }
 
       - name: Install Tailscale
@@ -76,7 +83,22 @@ jobs:
           RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $password = ConvertTo-SecureString $env:RDP_PASSWORD -AsPlainText -Force
+          # Allow the password chosen by the owner on this temporary, Tailscale-only runner.
+          $policy = Join-Path $env:RUNNER_TEMP 'rdp-password-policy.inf'
+          @'
+          [Unicode]
+          Unicode=yes
+          [Version]
+          signature="$CHICAGO$"
+          Revision=1
+          [System Access]
+          MinimumPasswordLength=0
+          PasswordComplexity=0
+          '@ | Set-Content -LiteralPath $policy -Encoding Unicode
+          & secedit.exe /configure /db "$env:RUNNER_TEMP\rdp-password-policy.sdb" /cfg $policy /areas SECURITYPOLICY /quiet
+          if ($LASTEXITCODE -ne 0) { throw 'Windows password policy could not be configured.' }
+          $plainPassword = if ($env:PASSWORD_SECRET_NAME) { $env:SESSION_PASSWORD } else { '123456' }
+          $password = ConvertTo-SecureString $plainPassword -AsPlainText -Force
           New-LocalUser -Name RDP -Password $password -AccountNeverExpires
           # Standard RDP user; no local administrator membership.
           $group = (Get-LocalGroup -SID 'S-1-5-32-555').Name
@@ -106,7 +128,7 @@ jobs:
           # RDP_LAUNCHER_PROTOCOL_V1 — checked by the desktop app before dispatch.
           Write-Host "RDP address: $env:TAILSCALE_IP"
           Write-Host 'Username: RDP'
-          Write-Host 'Password: use the value saved in your RDP_PASSWORD repository secret.'
+          Write-Host 'Password: 123456 by default, or the custom password selected in the launcher.'
           $now = [DateTimeOffset]::UtcNow
           $expires = $now.AddMinutes([int]$env:DURATION).ToString('o')
           "SESSION_EXPIRES_AT=$expires" >> $env:GITHUB_ENV

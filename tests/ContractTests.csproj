@@ -1,4 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><EnableDefaultCompileItems>false</EnableDefaultCompileItems><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
-  <ItemGroup><Compile Include="../desktop/RdpLauncher/L.cs" Link="L.cs" /><Compile Include="Program.cs" /><Compile Include="../desktop/RdpLauncher/GitHubClient.cs" Link="GitHubClient.cs" /><Compile Include="../desktop/RdpLauncher/RepositoryAddress.cs" Link="RepositoryAddress.cs" /><Compile Include="../desktop/RdpLauncher/TailscaleCheck.cs" Link="TailscaleCheck.cs" /></ItemGroup>
+  <ItemGroup><PackageReference Include="Sodium.Core" Version="1.4.1" /><Compile Include="../desktop/RdpLauncher/L.cs" Link="L.cs" /><Compile Include="Program.cs" /><Compile Include="../desktop/RdpLauncher/GitHubClient.cs" Link="GitHubClient.cs" /><Compile Include="../desktop/RdpLauncher/RepositoryAddress.cs" Link="RepositoryAddress.cs" /><Compile Include="../desktop/RdpLauncher/TailscaleCheck.cs" Link="TailscaleCheck.cs" /></ItemGroup>
 </Project>

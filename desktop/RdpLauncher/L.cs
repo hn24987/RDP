@@ -9,7 +9,10 @@ public static class L
 {
     static readonly ResourceManager Resources = new("RdpLauncher.Resources.Strings", typeof(L).Assembly);
     public static string Language { get; private set; } = "en";
-    static string PreferencePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RdpLauncher", "preferences.json");
+    // Tests compile this source into an isolated assembly and supply a temporary file.
+    // Production callers leave this unset; no environment variable redirects credentials/settings.
+    internal static string? PreferenceFileOverride { get; set; }
+    static string PreferencePath => PreferenceFileOverride ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RdpLauncher", "preferences.json");
 
     public static void Initialize()
     {

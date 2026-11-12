@@ -14,7 +14,7 @@ Create a Windows desktop on GitHub Actions, access it through Tailscale, and con
 
 **Windows 10 / 11 · x64 & ARM64 builds · English / Tiếng Việt · No installer required**
 
-The features below describe the current source. Older release downloads may not yet include ARM64, language settings, countdown reminders or file reception; use a build artifact from the matching source or a release that includes them.
+The features below describe the current source. Older release downloads may not yet include the dark dashboard or optional password field; use a build artifact from the matching source or a release that includes them.
 
 </div>
 
@@ -57,6 +57,7 @@ When the machine is ready, click **Open Remote Desktop** and sign in. The launch
 
 ## What you get
 
+- **A dark workspace.** Separate connection, session, file transfer and activity cards, with English on first launch.
 - **One place to launch and connect.** Start the workflow, see its progress, copy the IP, and open Remote Desktop.
 - **Checks before startup.** Find missing secrets, disabled workflows, or GitHub access problems before starting a session.
 - **Tailscale readiness checks.** See whether Tailscale is installed, signed in, connected, and online.
@@ -83,7 +84,7 @@ Want the app together with instructions and the workflow file? Get the **[comple
 | --- | --- |
 | GitHub Actions enabled in your fork | Runs the temporary Windows machine. |
 | `TAILSCALE_AUTH_KEY` repository secret | Connects the remote machine to your Tailscale network. |
-| `RDP_PASSWORD` repository secret | Sets the password you will use to sign in to Windows. |
+| Optional password in the launcher | Leave blank to use `123456`, or enter your own password. No manual password secret setup. |
 | Tailscale installed and connected on your PC | Lets your PC reach the remote machine. |
 | A GitHub token with access to your fork | Lets the app check your setup and start the workflow. |
 
@@ -96,7 +97,7 @@ Want the app together with instructions and the workflow file? Get the **[comple
 1. Open `RdpLauncher.exe` and enter your GitHub token when prompted on the first launch.
 2. Paste **your repository URL**, choose a session duration, and click **Get RDP**.
 3. Wait for the IP, then click **Open Remote Desktop**.
-4. Sign in as **`.\RDP`** using the password you saved in **`RDP_PASSWORD`**.
+4. Sign in as **`.\RDP`** using your chosen password, or **`123456`** if left blank.
 
 After the initial setup, the app remembers your token and fork. You can also use **Check setup** to check your configuration without starting a machine.
 

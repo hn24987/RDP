@@ -8,10 +8,15 @@ namespace RdpLauncher;
 public sealed class LauncherForm : Form
 {
     readonly TextBox repository = new() { PlaceholderText = "https://github.com/YOUR-USERNAME/RDP", Width = 480 };
-    readonly Button updates = new() { Text = "Check for updates", AutoSize = true };
-    readonly Button settings = new() { Text = "Settings", AutoSize = true };
-    readonly Button receive = new() { Text = "Receive files", AutoSize = true };
-    readonly Label remaining = new() { AutoSize = true };
+    readonly Button updates = Theme.Button("Check for updates");
+    readonly Button settings = Theme.Button("Settings");
+    readonly Button receive = Theme.Button("Receive files");
+    readonly Label remaining = new() { Text = "--:--:--", AutoSize = true, Font = new Font("Consolas", 26, FontStyle.Bold), ForeColor = Theme.Accent };
+    readonly Label address = new() { Text = "Not connected", AutoSize = true, Font = new Font("Segoe UI", 16, FontStyle.Bold), ForeColor = Theme.Text };
+    readonly Label sessionBadge = new() { Text = "No active session", AutoSize = true, ForeColor = Theme.Muted };
+    readonly Panel scroll = new() { Dock = DockStyle.Fill, AutoScroll = true, BackColor = Theme.Bg };
+    Panel setupCard = null!, sessionCard = null!, transferCard = null!, activityCard = null!;
+    readonly List<(Button Button, string Section)> navigation = new();
     readonly System.Windows.Forms.Timer countdownTimer = new() { Interval = 1000 };
     readonly SessionCountdown countdown = new();
     readonly CancellationTokenSource lifetime = new();
@@ -19,61 +24,45 @@ public sealed class LauncherForm : Form
     bool receiving;
     bool warningOpen;
     bool resourcesDisposed;
+    readonly TextBox sessionPassword = new() { UseSystemPasswordChar = true, MaxLength = 127, PlaceholderText = "Optional — default: 123456" };
     string token = "";
     readonly Label forkStatus = new() { AutoSize = true, MaximumSize = new Size(880, 0) };
     readonly Label tokenStatus = new() { Text = "GitHub token not configured", AutoSize = true };
-    readonly Button changeToken = new() { Text = "Add / change token", AutoSize = true };
-    readonly Button forgetToken = new() { Text = "Forget token", AutoSize = true };
+    readonly Button changeToken = Theme.Button("Add / change token");
+    readonly Button forgetToken = Theme.Button("Forget token");
     readonly NumericUpDown duration = new() { Minimum = 10, Maximum = 300, Value = 60, Width = 85 };
     readonly TextBox runId = new() { Width = 180 };
-    readonly Button check = new() { Text = "Check setup", AutoSize = true };
-    readonly Button start = new() { Text = "Get RDP", AutoSize = true };
-    readonly Button resume = new() { Text = "Resume run", AutoSize = true };
-    readonly Button stopWatch = new() { Text = "Stop monitoring", AutoSize = true, Enabled = false };
-    readonly Button cancel = new() { Text = "Stop workflow", AutoSize = true };
-    readonly Button connect = new() { Text = "Open Remote Desktop", AutoSize = true, Enabled = false };
-    readonly Button copy = new() { Text = "Copy IP", AutoSize = true, Enabled = false };
+    readonly Button check = Theme.Button("Check setup");
+    readonly Button start = Theme.Button("Get RDP", primary: true);
+    readonly Button resume = Theme.Button("Resume run");
+    readonly Button stopWatch = Theme.Button("Stop monitoring");
+    readonly Button cancel = Theme.Button("Stop workflow", danger: true);
+    readonly Button connect = Theme.Button("Open Remote Desktop", primary: true);
+    readonly Button copy = Theme.Button("Copy IP");
     readonly TextBox log = new() { Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical, Dock = DockStyle.Fill };
     readonly Label connection = new() { Text = "No RDP session connected.", AutoSize = true, MaximumSize = new Size(830, 0) };
     readonly string settingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "RdpLauncher", "session-v2.json");
     string? pendingRequest;
+    bool customPasswordPending;
     string? sessionRepository;
     string? currentIp;
     CancellationTokenSource? operation;
     bool busy;
-    sealed record SavedSession(string Repository, string RunId, string? RequestId);
+    sealed record SavedSession(string Repository, string RunId, string? RequestId, bool CustomPasswordPending = false);
     sealed record SavedState(string Repository, Dictionary<string, SavedSession> Sessions);
     Dictionary<string, SavedSession> sessions = new(StringComparer.OrdinalIgnoreCase);
 
     public LauncherForm()
     {
-        Text = "RDP Launcher v1.1.1 · Created by hn24987";
-        Size = new Size(1020, 900);
-        MinimumSize = new Size(860, 720);
+        Text = "RDP Launcher";
+        Size = new Size(1320, 940);
+        MinimumSize = new Size(1120, 780);
         Font = new Font("Segoe UI", 10);
-        var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 14, Padding = new Padding(18) };
-        for (var row = 0; row < 13; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        layout.Controls.Add(new Label { Text = "RDP Launcher", Font = new Font("Segoe UI", 21, FontStyle.Bold), AutoSize = true });
-        layout.Controls.Add(Row(new Label { Text = "Created by hn24987", AutoSize = true },
-            Link("Source: github.com/hn24987/RDP-Launcher", RepositoryAddress.SourceUrl), Link("Fork this project", RepositoryAddress.SourceUrl + "/fork")));
-        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(880, 0), Text = "Use a repository you control. Owners can use hn24987/RDP-Launcher directly; other users should fork the project. Enable Actions and add the required secrets." });
-        layout.Controls.Add(Row(new Label { Text = "Repository URL", AutoSize = true }, repository));
-        layout.Controls.Add(forkStatus);
-        layout.Controls.Add(Row(tokenStatus, changeToken, forgetToken,
-            new Label { Text = "Session (minutes)", AutoSize = true }, duration));
-        layout.Controls.Add(Row(check, start, resume, stopWatch, cancel));
-        layout.Controls.Add(Row(new Label { Text = "Run ID", AutoSize = true }, runId,
-            Link("Secrets", () => RepoUrl("settings/secrets/actions")), Link("Actions / logs", () => RepoUrl("actions")),
-            Link("Auth Keys", "https://login.tailscale.com/admin/settings/keys"), Link("Install Tailscale", "https://tailscale.com/download/windows"),
-            Link("Open Tailscale", () => TailscaleCheck.FindExecutable("tailscale-ipn.exe") ?? throw new InvalidOperationException(L.T("Tailscale UI not found. Install it first, or open Tailscale from the Windows Start menu.")))));
-        layout.Controls.Add(Row(updates, settings, receive));
-        layout.Controls.Add(remaining);
-        layout.Controls.Add(connection);
-        layout.Controls.Add(Row(copy, connect));
-        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(880, 0), Padding = new Padding(0, 5, 0, 8), Text = "Get RDP runs preflight automatically. When ready, open Remote Desktop and sign in as .\\RDP with your RDP_PASSWORD secret. Match any certificate prompt to the displayed IP. Closing this app does not stop your workflow. Your token is encrypted and saved beside the EXE." });
-        layout.Controls.Add(log);
-        Controls.Add(layout);
+        BackColor = Theme.Bg;
+        ForeColor = Theme.Text;
+        copy.Enabled = connect.Enabled = stopWatch.Enabled = false;
+        BuildDashboard();
+        Theme.Apply(this);
         RegisterCaptions(this);
         ApplyLanguage();
         countdownTimer.Tick += (_, _) => TickCountdown();
@@ -120,10 +109,12 @@ public sealed class LauncherForm : Form
             {
                 var branch = await Preflight(api, ct);
                 sessionRepository = RepositoryAddress.Parse(repository.Text);
-                pendingRequest = Guid.NewGuid().ToString("N");
+                pendingRequest = Guid.NewGuid().ToString("N").ToUpperInvariant();
+                customPasswordPending = sessionPassword.TextLength > 0;
                 Save(); // Persist correlation BEFORE dispatch: a lost response must not cause duplicate dispatch.
                 Write(L.F("Dispatching session {0}…", pendingRequest));
-                await api.Dispatch(branch, pendingRequest, (int)duration.Value, ct);
+                var passwordSecret = await api.PreparePassword(pendingRequest, sessionPassword.Text, ct);
+                await api.Dispatch(branch, pendingRequest, (int)duration.Value, ct, passwordSecret);
                 Write(L.T("GitHub accepted the request. Finding your run…"));
                 var id = await Discover(api, ct);
                 await Monitor(api, id, ct);
@@ -180,19 +171,170 @@ public sealed class LauncherForm : Form
             }
         }
         catch { Write(L.T("Could not load the previous session. You can enter a Run ID manually.")); }
-        Write(L.T("First run: select the source repository (with write access) or your fork. Enable Actions and add TAILSCALE_AUTH_KEY and RDP_PASSWORD. Forks do not inherit secrets."));
+        Write(L.T("First run: select your repository, enable Actions and add TAILSCALE_AUTH_KEY. Leave the session password blank to use 123456."));
         UpdateStart();
+    }
+    Label LabelText(string text, float size = 10, bool bold = false, Color? color = null)
+    {
+        var label = Theme.Label(text, size, bold, color ?? Theme.Text);
+        label.Margin = new Padding(0, 0, 0, 6);
+        return label;
+    }
+    static TableLayoutPanel Stack()
+    {
+        var stack = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, BackColor = Color.Transparent, Margin = Padding.Empty };
+        stack.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        return stack;
+    }
+    static void Item(TableLayoutPanel stack, Control control, float height = 0)
+    {
+        var index = stack.RowCount++;
+        stack.RowStyles.Add(height > 0 ? new RowStyle(SizeType.Absolute, height) : new RowStyle(SizeType.AutoSize));
+        control.Dock = DockStyle.Fill;
+        stack.Controls.Add(control, 0, index);
+    }
+    static void Spacer(TableLayoutPanel stack)
+    {
+        stack.RowCount++;
+        stack.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+    }
+    static Panel Input(Control control)
+    {
+        var wrap = new Panel { Height = 44, BackColor = Theme.Raised, Padding = new Padding(12, 10, 12, 8), Margin = new Padding(0, 3, 0, 10) };
+        control.Dock = DockStyle.Fill;
+        if (control is TextBox text) { text.BorderStyle = BorderStyle.None; text.Font = new Font("Segoe UI", 10.5f); }
+        wrap.Controls.Add(control);
+        return wrap;
+    }
+    void BuildDashboard()
+    {
+        var shell = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 1, Margin = Padding.Empty, Padding = Padding.Empty, BackColor = Theme.Bg };
+        shell.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 212));
+        shell.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        shell.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        Controls.Add(shell);
+        var sidebar = new Panel { Dock = DockStyle.Fill, BackColor = Color.FromArgb(8, 13, 24), Padding = new Padding(20, 26, 20, 20) };
+        shell.Controls.Add(sidebar, 0, 0);
+        var side = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 10, BackColor = Color.Transparent };
+        side.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        for (int i = 0; i < 10; i++) side.RowStyles.Add(new RowStyle(i == 6 ? SizeType.Percent : SizeType.AutoSize, i == 6 ? 100 : 0));
+        sidebar.Controls.Add(side);
+        var brand = LabelText("RDP", 30, true, Theme.Accent); brand.Margin = Padding.Empty;
+        side.Controls.Add(brand, 0, 0);
+        side.Controls.Add(LabelText("LAUNCHER", 10, true, Theme.Muted), 0, 1);
+        var sectionTitle = LabelText("WORKSPACE", 8, true, Theme.Muted); sectionTitle.Margin = new Padding(0, 35, 0, 14); side.Controls.Add(sectionTitle, 0, 2);
+        var nav = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, WrapContents = false, BackColor = Color.Transparent };
+        foreach (var name in new[] { "Overview", "Connection", "Files", "Activity" })
+        {
+            var button = Theme.Button(name); button.Width = 160; button.Height = 44; button.AutoSize = false; button.Margin = new Padding(0, 0, 0, 7);
+            if (button is RoundedButton rounded) rounded.Selected = name == "Overview";
+            navigation.Add((button, name));
+            button.Click += (_, _) => Navigate(name);
+            nav.Controls.Add(button);
+        }
+        side.Controls.Add(nav, 0, 3);
+        var source = Link("Source code", RepositoryAddress.SourceUrl); source.Margin = new Padding(0, 26, 0, 6); side.Controls.Add(source, 0, 4);
+        side.Controls.Add(Link("Setup guide", RepositoryAddress.SourceUrl + "/blob/main/docs/SETUP.md"), 0, 5);
+        var footer = new FlowLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, FlowDirection = FlowDirection.TopDown, WrapContents = false, BackColor = Color.Transparent };
+        foreach (var button in new[] { updates, settings }) { button.Width = 160; button.Height = 40; button.AutoSize = false; button.Margin = new Padding(0, 0, 0, 8); footer.Controls.Add(button); }
+        footer.Controls.Add(LabelText("made by hn24987", 9, false, Theme.Muted));
+        footer.Controls.Add(LabelText("v" + AppVersion.Current, 8, false, Theme.Purple));
+        side.Controls.Add(footer, 0, 7);
+        shell.Controls.Add(scroll, 1, 0);
+        var content = new TableLayoutPanel { Dock = DockStyle.Top, AutoSize = true, ColumnCount = 1, RowCount = 5, Padding = new Padding(28, 24, 28, 24), BackColor = Theme.Bg };
+        content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        content.RowStyles.Add(new RowStyle(SizeType.Absolute, 86));
+        content.RowStyles.Add(new RowStyle(SizeType.Absolute, 515));
+        content.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
+        content.RowStyles.Add(new RowStyle(SizeType.Absolute, 226));
+        content.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        scroll.Controls.Add(content);
+        var hero = Stack();
+        Item(hero, LabelText("Your remote workspace.", 25, true));
+        Item(hero, LabelText("Set up once. Launch a Windows session when you need it.", 10, false, Theme.Muted));
+        content.Controls.Add(hero, 0, 0);
+        var dashboard = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 1, BackColor = Color.Transparent, Margin = Padding.Empty };
+        dashboard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58));
+        dashboard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42));
+        dashboard.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        content.Controls.Add(dashboard, 0, 1);
+        setupCard = Theme.Card(); setupCard.Dock = DockStyle.Fill; setupCard.Margin = new Padding(0, 0, 18, 0);
+        dashboard.Controls.Add(setupCard, 0, 0);
+        var setup = Stack(); setupCard.Controls.Add(setup);
+        Item(setup, LabelText("Connection setup", 15, true), 34);
+        Item(setup, LabelText("Repository URL", 9, true, Theme.Muted), 22);
+        repository.PlaceholderText = "https://github.com/your-name/RDP-Launcher";
+        Item(setup, Input(repository), 56);
+        forkStatus.Font = new Font("Segoe UI", 9); forkStatus.ForeColor = Theme.Muted; forkStatus.AutoSize = true; forkStatus.Margin = new Padding(0, 0, 0, 8);
+        Item(setup, forkStatus, 49);
+        tokenStatus.ForeColor = Theme.Purple; tokenStatus.Font = new Font("Segoe UI", 9.5f); tokenStatus.Margin = new Padding(0, 6, 0, 0);
+        Item(setup, tokenStatus, 25);
+        Item(setup, Row(changeToken, forgetToken), 43);
+        Item(setup, LabelText("Session password (optional)", 9, true, Theme.Muted), 22);
+        Item(setup, Input(sessionPassword), 50);
+        var timeRow = Row(LabelText("Session (minutes)", 9, true, Theme.Muted), duration, LabelText("10–300 minutes", 8.5f, false, Theme.Muted));
+        duration.Height = 32; timeRow.Padding = new Padding(0, 7, 0, 4); Item(setup, timeRow, 44);
+        var controls = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 1, BackColor = Color.Transparent };
+        controls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 54)); controls.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 46));
+        controls.Controls.Add(start, 0, 0); controls.Controls.Add(check, 1, 0); start.Dock = check.Dock = DockStyle.Fill;
+        start.Margin = new Padding(0, 4, 8, 4); check.Margin = new Padding(0, 4, 0, 4);
+        Item(setup, controls, 56);
+        Item(setup, Row(Link("Secrets", () => RepoUrl("settings/secrets/actions")), Link("Auth Keys", "https://login.tailscale.com/admin/settings/keys"), Link("Install Tailscale", "https://tailscale.com/download/windows")), 34);
+        Item(setup, Row(Link("Open Tailscale", () => TailscaleCheck.FindExecutable("tailscale-ipn.exe") ?? throw new InvalidOperationException(L.T("Tailscale UI not found. Install it first, or open Tailscale from the Windows Start menu."))), Link("Fork project", RepositoryAddress.SourceUrl + "/fork")), 34);
+        Spacer(setup);
+        var right = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 2, BackColor = Color.Transparent, Margin = Padding.Empty };
+        right.RowStyles.Add(new RowStyle(SizeType.Percent, 62)); right.RowStyles.Add(new RowStyle(SizeType.Percent, 38));
+        dashboard.Controls.Add(right, 1, 0);
+        sessionCard = Theme.Card(); sessionCard.Dock = DockStyle.Fill; sessionCard.Margin = new Padding(0, 0, 0, 16); right.Controls.Add(sessionCard, 0, 0);
+        var session = Stack(); sessionCard.Controls.Add(session);
+        Item(session, Row(LabelText("Your session", 14, true), sessionBadge), 32);
+        Item(session, remaining, 51);
+        Item(session, address, 35);
+        connection.Font = new Font("Segoe UI", 9); connection.ForeColor = Theme.Muted; Item(session, connection, 51);
+        var connectRow = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 1, BackColor = Color.Transparent };
+        connectRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70)); connectRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
+        connectRow.Controls.Add(connect, 0, 0); connectRow.Controls.Add(copy, 1, 0); connect.Dock = copy.Dock = DockStyle.Fill;
+        connect.Margin = new Padding(0, 2, 8, 2); copy.Margin = new Padding(0, 2, 0, 2); Item(session, connectRow, 45);
+        Spacer(session);
+        transferCard = Theme.Card(); transferCard.Dock = DockStyle.Fill; transferCard.Margin = Padding.Empty; right.Controls.Add(transferCard, 0, 1);
+        var transfer = Stack(); transferCard.Controls.Add(transfer);
+        Item(transfer, LabelText("Bring your files home.", 14, true), 30);
+        Item(transfer, LabelText("Send selected files from RDP through Taildrop, then receive them here.", 9, false, Theme.Muted), 48);
+        receive.Dock = DockStyle.Fill; receive.Margin = Padding.Empty; Item(transfer, receive, 40);
+        Spacer(transfer);
+        activityCard = Theme.Card(); activityCard.Dock = DockStyle.Fill; activityCard.Margin = Padding.Empty;
+        var activity = Stack(); activityCard.Controls.Add(activity); content.Controls.Add(activityCard, 0, 3);
+        Item(activity, LabelText("Activity log", 14, true), 30);
+        runId.Width = 135; runId.BorderStyle = BorderStyle.FixedSingle;
+        Item(activity, Row(LabelText("Run ID", 9, false, Theme.Muted), runId, resume, stopWatch, cancel, Link("View on GitHub", () => RepoUrl("actions"))), 48);
+        log.BackColor = Theme.Bg; log.ForeColor = Theme.Muted; log.BorderStyle = BorderStyle.None; log.Font = new Font("Consolas", 9);
+        Item(activity, log);
+        activity.RowStyles[^1] = new RowStyle(SizeType.Percent, 100);
+        var note = LabelText("Closing the launcher keeps your RDP session running. Use Stop workflow to end it.", 8.5f, false, Theme.Muted);
+        note.Margin = new Padding(2, 12, 0, 0); content.Controls.Add(note, 0, 4);
+        Resize += (_, _) => { forkStatus.MaximumSize = new Size(Math.Max(240, setupCard.ClientSize.Width - 40), 0); connection.MaximumSize = new Size(Math.Max(200, sessionCard.ClientSize.Width - 40), 0); };
+    }
+    void Navigate(string section)
+    {
+        foreach (var item in navigation) if (item.Button is RoundedButton button) button.Selected = item.Section == section;
+        var target = section switch { "Connection" => setupCard, "Files" => transferCard, "Activity" => activityCard, _ => setupCard };
+        scroll.ScrollControlIntoView(target);
+        if (section == "Connection") repository.Focus();
+        if (section == "Activity") log.Focus();
     }
     static FlowLayoutPanel Row(params Control[] controls)
     {
-        var row = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Fill, WrapContents = true, Padding = new Padding(0, 5, 0, 5) };
+        var row = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Fill, WrapContents = true, Padding = Padding.Empty };
+        row.BackColor = Color.Transparent;
         row.Controls.AddRange(controls);
         return row;
     }
     LinkLabel Link(string title, string url) => Link(title, () => url);
     LinkLabel Link(string title, Func<string> url)
     {
-        var link = new LinkLabel { Text = title, AutoSize = true, Margin = new Padding(8) };
+        var link = new LinkLabel { Text = title, AutoSize = true, Margin = new Padding(0, 8, 14, 4),
+            LinkColor = Theme.Purple, ActiveLinkColor = Theme.Accent, VisitedLinkColor = Theme.Purple,
+            LinkBehavior = LinkBehavior.HoverUnderline, Font = new Font("Segoe UI", 9) };
         link.LinkClicked += (_, _) =>
         {
             try { Process.Start(new ProcessStartInfo(url()) { UseShellExecute = true }); }
@@ -234,7 +376,7 @@ public sealed class LauncherForm : Form
     {
         if (busy) return;
         busy = true;
-        check.Enabled = start.Enabled = resume.Enabled = repository.Enabled = changeToken.Enabled = forgetToken.Enabled = duration.Enabled = runId.Enabled = false;
+        check.Enabled = start.Enabled = resume.Enabled = repository.Enabled = changeToken.Enabled = forgetToken.Enabled = duration.Enabled = sessionPassword.Enabled = runId.Enabled = false;
         stopWatch.Enabled = true;
         using var cts = new CancellationTokenSource();
         operation = cts;
@@ -247,7 +389,7 @@ public sealed class LauncherForm : Form
             busy = false;
             if (!IsDisposed)
             {
-                check.Enabled = start.Enabled = resume.Enabled = repository.Enabled = changeToken.Enabled = forgetToken.Enabled = duration.Enabled = runId.Enabled = true;
+                check.Enabled = start.Enabled = resume.Enabled = repository.Enabled = changeToken.Enabled = forgetToken.Enabled = duration.Enabled = sessionPassword.Enabled = runId.Enabled = true;
                 stopWatch.Enabled = false;
                 UpdateStart();
             }
@@ -307,12 +449,20 @@ public sealed class LauncherForm : Form
                 // Recheck after artifact retrieval so a finished session isn't displayed as ready.
                 var latest = await api.Get($"actions/runs/{id}", ct);
                 if (latest.GetProperty("status").GetString() == "completed") continue;
+                if (customPasswordPending && pendingRequest is not null && run.GetProperty("display_title").GetString() == "rdp-app-" + pendingRequest)
+                {
+                    try { await api.DeletePassword(pendingRequest, ct); customPasswordPending = false; Save(); } catch (Exception) { Write(L.T("The session is ready. Its temporary password secret may need manual removal in GitHub Settings.")); }
+                }
                 currentIp = info.Ip;
-                Caption(connection, "IP: {0}   ·   User: .\\{1}\nExpected end: {2} (your local time)", info.Ip, info.Username, info.ExpiresAt.ToLocalTime().ToString("g"));
+                address.Text = info.Ip;
+                captions.Remove(address);
+                Caption(sessionBadge, "Session ready");
+                sessionBadge.ForeColor = Theme.Accent;
+                Caption(connection, "Username: .\\{0}\nExpected end: {1}", info.Username, info.ExpiresAt.ToLocalTime().ToString("g"));
                 countdown.Configure(id, info.ExpiresAt, DateTimeOffset.UtcNow);
                 TickCountdown();
                 copy.Enabled = connect.Enabled = true;
-                Write(L.T("PASS · The runner has enabled RDP. Use the password you set in the RDP_PASSWORD secret."));
+                Write(L.T("PASS · RDP is ready. Use the password selected in this app, or 123456 if left blank."));
                 using var tcp = new TcpClient();
                 try { await tcp.ConnectAsync(info.Ip, 3389, ct).AsTask().WaitAsync(TimeSpan.FromSeconds(10), ct); Write(L.T("PASS · Your device can reach TCP 3389. Click Open Remote Desktop.")); }
                 catch (Exception ex) when (ex is SocketException or TimeoutException) { Write(L.T("TCP 3389 is not reachable yet. Check the tailnet, device approval and ACLs/grants for port 3389. The runner IP is available; retry after fixing access.")); }
@@ -328,17 +478,18 @@ public sealed class LauncherForm : Form
         var target = RepositoryAddress.Parse(repository.Text);
         if (string.Equals(target, sessionRepository, StringComparison.OrdinalIgnoreCase)) return;
         if (sessionRepository is not null)
-            sessions[sessionRepository] = new SavedSession("https://github.com/" + sessionRepository, runId.Text.Trim(), pendingRequest);
+            sessions[sessionRepository] = new SavedSession("https://github.com/" + sessionRepository, runId.Text.Trim(), pendingRequest, customPasswordPending);
         runId.Text = "";
         pendingRequest = null;
-        if (sessions.TryGetValue(target, out var saved)) { runId.Text = saved.RunId; pendingRequest = saved.RequestId; }
+        customPasswordPending = false;
+        if (sessions.TryGetValue(target, out var saved)) { runId.Text = saved.RunId; pendingRequest = saved.RequestId; customPasswordPending = saved.CustomPasswordPending; }
         sessionRepository = target;
         ClearConnection();
     }
     void Save()
     {
         var target = RepositoryAddress.Parse(repository.Text);
-        sessions[target] = new SavedSession(repository.Text.Trim(), runId.Text.Trim(), pendingRequest);
+        sessions[target] = new SavedSession(repository.Text.Trim(), runId.Text.Trim(), pendingRequest, customPasswordPending);
         Directory.CreateDirectory(Path.GetDirectoryName(settingsPath)!);
         File.WriteAllText(settingsPath, JsonSerializer.Serialize(new SavedState(repository.Text.Trim(), sessions)));
     }
@@ -346,7 +497,10 @@ public sealed class LauncherForm : Form
     {
         currentIp = null;
         countdown.Clear();
-        remaining.Text = "";
+        remaining.Text = "--:--:--";
+        Caption(address, "Not connected");
+        Caption(sessionBadge, "No active session");
+        sessionBadge.ForeColor = Theme.Muted;
         Caption(connection, "No RDP session connected.");
         copy.Enabled = connect.Enabled = false;
     }
@@ -367,6 +521,8 @@ public sealed class LauncherForm : Form
     void ApplyLanguage()
     {
         Text = L.F("RDP Launcher v{0} · Created by hn24987", AppVersion.Current);
+        sessionPassword.PlaceholderText = L.T("Optional — default: 123456");
+        sessionPassword.AccessibleName = L.T("Session password (optional)");
         foreach (var item in captions)
             item.Key.Text = item.Value.Args.Length == 0 ? L.T(item.Value.Key) : L.F(item.Value.Key, item.Value.Args);
         UpdateStart();
@@ -377,12 +533,15 @@ public sealed class LauncherForm : Form
         if (IsDisposed || warningOpen) return;
         var now = DateTimeOffset.UtcNow;
         var left = countdown.Remaining(now);
-        remaining.Text = left.HasValue ? L.F("Remaining: {0}", left.Value.ToString(@"hh\:mm\:ss")) : "";
+        remaining.Text = left.HasValue ? left.Value.ToString(@"hh\:mm\:ss") : "--:--:--";
         foreach (var warning in countdown.Tick(now))
         {
             if (warning == SessionWarning.Expired)
             {
                 currentIp = null;
+                Caption(address, "Session expired");
+                Caption(sessionBadge, "Session expired");
+                sessionBadge.ForeColor = Theme.Danger;
                 copy.Enabled = connect.Enabled = false;
                 Caption(connection, "Session expired. The remote machine may have stopped. Save files before future sessions end.");
                 Write(L.T("Session expired"));

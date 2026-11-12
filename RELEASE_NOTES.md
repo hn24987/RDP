@@ -1,24 +1,23 @@
-# RDP Launcher v1.2.0 — Session tools and two languages
+# RDP Launcher v1.3.0 — Dark dashboard and optional password
 
-Created by **hn24987** · https://github.com/hn24987/RDP-Launcher
+Created by [hn24987](https://github.com/hn24987). [Source code](https://github.com/hn24987/RDP-Launcher).
 
-## Added
+- Dark navy dashboard with sidebar navigation and separate connection, session, transfer and activity cards. Token and Settings dialogs use the same dark design.
+- English is the first-launch default. A previously saved English/Vietnamese choice is preserved.
+- Optional password field. Leave it blank for **123456**. The workflow no longer requires RDP_PASSWORD or a 14-character complex password.
+- Windows password complexity is configured on the temporary runner to accept the selected password. RDP remains scoped to Tailscale.
+- Custom passwords are encrypted into per-session GitHub secrets, not public workflow inputs. Custom passwords need token Secrets read/write permission. Temporary secrets are removed after the connection is ready; resume the launcher or delete them in repository Settings if it was closed early.
 
-- **Check for updates** checks the latest stable GitHub release, compares numeric versions and offers to open its release page. Updates are never downloaded or executed automatically.
-- **Session countdown** shows the expected remaining time and alerts at 10 and 5 minutes with a popup and sound. Keep the launcher open to receive reminders. Resuming the same run preserves notifications even if a refresh fails.
-- **Receive files** retrieves this PC's Tailscale/Taildrop inbox into a chosen local folder. Send selected files from the remote desktop first. Same-owner and Taildrop device restrictions apply. This does not browse the remote filesystem or back up files automatically; Windows Tailscale may already save incoming files to Downloads.
-- **Settings → Language** switches between English and Tiếng Việt immediately and remembers the choice. App strings live in `.resx` resources; existing log entries and external CLI messages retain their original language.
-- Native **win-arm64** packages alongside **win-x64** packages. ARM64 binaries are cross-compiled and their PE architecture is checked; native ARM64 execution still needs device validation.
+The Windows account accepts up to its native 127-character limit. Passwords are not saved beside the app. Existing session, update, Taildrop and bilingual features remain.
 
-## Build and community
+Builds/tests do not substitute for live RDP, transfer or ARM64 device testing. The EXE remains unsigned.
 
-- Build versions come from `.csproj` or a matching version tag; ZIP filenames follow the version automatically.
-- Both architectures include documentation and the MIT license. Releases include architecture-specific EXEs and SHA256 checksums; `RdpLauncher.exe` remains the x64 alias.
-- MIT LICENSE, CI/release/license badges, contribution guide and YAML issue forms for bugs/setup help.
-- SmartScreen documentation explains how to verify the official source/checksum and use More info → Run anyway when available. The EXE remains unsigned; no security settings need to be disabled.
+## Update
 
-The RDP workflow now uses the same expiry timestamp for connection metadata and session shutdown. Manual runs, source repository access and encrypted token storage remain supported. Existing repository secrets are still required.
+Replace the old EXE with the v1.3.0 build for your Windows architecture. Keep the existing encrypted token file beside it if you want to reuse your saved sign-in on the same Windows account. Sync your fork's `.github/workflows/main.yml` from this release before using the new launcher. The workflow only requires `TAILSCALE_AUTH_KEY`; a password secret is no longer a prerequisite. Start a new workflow run after updating, rather than re-running a failed run from an older commit.
 
-## Verification scope
+The token needs Secrets read permission for setup checks. Custom passwords additionally need Secrets write permission; leave the password blank if you want the default without secret writes. A custom password is not retained locally after the app closes.
 
-Automated checks cover repository access rules, release metadata/version parsing, notification thresholds, Taildrop literal arguments, language resources, Windows UI construction and DPAPI token storage. Interactive expiry popup/audio, live Taildrop transfers and live RDP login still need validation with configured devices. ARM64 builds are not executed on x64 runners.
+## Verification
+
+Automated checks cover API contracts, sealed password encryption, English/Vietnamese preferences, native Windows UI construction and token persistence. Windows account creation was tested with both the default password and a one-character custom password using the policy block from the actual workflow. Both x64 and ARM64 packages build successfully; ARM64 is cross-compiled. Native UI previews are captured on Windows. Live remote desktop login and file transfer were not tested in this change.

@@ -13,11 +13,14 @@ internal static class Program
             apply.Invoke(null,new object[]{language});
             using var form = new LauncherForm();
             form.CreateControl();
-            foreach (var size in new[]{new System.Drawing.Size(1020,900),new System.Drawing.Size(860,720)})
+            foreach (var size in new[]{new System.Drawing.Size(1320,940),new System.Drawing.Size(1120,780)})
             {
                 form.Size = size;
                 form.PerformLayout();
                 var all = All(form).ToArray();
+                if(form.BackColor!=Theme.Bg) throw new Exception("Dashboard is not using the dark background.");
+                if(all.OfType<RoundedCard>().Count()<4) throw new Exception("Expected setup, session, transfer and activity cards.");
+                if(!all.OfType<RoundedButton>().Any()) throw new Exception("Custom accessible dark buttons are missing.");
                 var expected=L.T("Check for updates");
                 if (!all.OfType<Button>().Any(b=>b.Text==expected)) throw new Exception("Update button not localized: "+language);
                 if (!all.OfType<Button>().Any(b=>b.Text==L.T("Receive files"))) throw new Exception("Missing Receive files button");

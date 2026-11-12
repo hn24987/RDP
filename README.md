@@ -83,7 +83,7 @@ Want the app together with instructions and the workflow file? Get the **[comple
 | --- | --- |
 | GitHub Actions enabled in your fork | Runs the temporary Windows machine. |
 | `TAILSCALE_AUTH_KEY` repository secret | Connects the remote machine to your Tailscale network. |
-| `RDP_PASSWORD` repository secret | Sets the password you will use to sign in to Windows. |
+| Optional password in the launcher | Leave blank to use `123456`, or enter your own password. No manual password secret setup. |
 | Tailscale installed and connected on your PC | Lets your PC reach the remote machine. |
 | A GitHub token with access to your fork | Lets the app check your setup and start the workflow. |
 
@@ -96,7 +96,7 @@ Want the app together with instructions and the workflow file? Get the **[comple
 1. Open `RdpLauncher.exe` and enter your GitHub token when prompted on the first launch.
 2. Paste **your repository URL**, choose a session duration, and click **Get RDP**.
 3. Wait for the IP, then click **Open Remote Desktop**.
-4. Sign in as **`.\RDP`** using the password you saved in **`RDP_PASSWORD`**.
+4. Sign in as **`.\RDP`** using your chosen password, or **`123456`** if left blank.
 
 After the initial setup, the app remembers your token and fork. You can also use **Check setup** to check your configuration without starting a machine.
 

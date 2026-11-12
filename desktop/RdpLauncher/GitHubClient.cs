@@ -45,7 +45,9 @@ public sealed class GitHubClient : IDisposable
             throw new InvalidOperationException(L.F("GitHub HTTP {0}: {1}", (int)response.StatusCode, hint));
         }
         if (response.StatusCode == HttpStatusCode.NoContent) return default;
-        using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
+        var payload = await response.Content.ReadAsStringAsync(ct);
+        if (string.IsNullOrWhiteSpace(payload)) return default;
+        using var doc = JsonDocument.Parse(payload);
         return doc.RootElement.Clone();
     }
     public Task<JsonElement> Get(string suffix, CancellationToken ct) => Request(HttpMethod.Get, $"{repo}/{suffix}", null, ct);
@@ -113,10 +115,10 @@ public sealed class GitHubClient : IDisposable
             if (list.GetArrayLength() < 100) break;
             secrets = await Get($"actions/secrets?per_page=100&page={page + 1}", ct);
         }
-        var missing = new[] { "TAILSCALE_AUTH_KEY", "RDP_PASSWORD" }.Where(name => !names.Contains(name)).ToArray();
+        var missing = new[] { "TAILSCALE_AUTH_KEY" }.Where(name => !names.Contains(name)).ToArray();
         if (missing.Length != 0)
             throw new InvalidOperationException(L.F("Missing repository secrets: {0}. Open Secrets to add them; forked repositories do not inherit secrets.", string.Join(", ", missing)));
-        log(L.T("PASS · TAILSCALE_AUTH_KEY and RDP_PASSWORD exist (values cannot be read back)"));
+        log(L.T("PASS · TAILSCALE_AUTH_KEY exists (value cannot be read back)"));
         foreach (var run in (await runsTask).GetProperty("workflow_runs").EnumerateArray())
         {
             var status = run.GetProperty("status").GetString();
@@ -127,9 +129,27 @@ public sealed class GitHubClient : IDisposable
         log(L.T("Runner availability, billing/quota, Auth Key validity, device approval and ACLs are confirmed only during startup/connection."));
         return branch;
     }
-    public Task<JsonElement> Dispatch(string branch, string requestId, int minutes, CancellationToken ct) =>
+    public async Task<string> PreparePassword(string requestId, string password, CancellationToken ct)
+    {
+        if (password.Length == 0) return ""; // Default is handled by the workflow, no write permission needed.
+        if (!Regex.IsMatch(requestId, "^[A-F0-9]{32}$")) throw new InvalidOperationException("Invalid session ID.");
+        var key = await Get("actions/secrets/public-key", ct);
+        var plain = Encoding.UTF8.GetBytes(password);
+        byte[] encrypted;
+        try { encrypted = Sodium.SealedPublicKeyBox.Create(plain, Convert.FromBase64String(key.GetProperty("key").GetString()!)); }
+        finally { System.Security.Cryptography.CryptographicOperations.ZeroMemory(plain); }
+        var name = "RDP_PASSWORD_" + requestId;
+        await Request(HttpMethod.Put, $"{repo}/actions/secrets/{name}", new { encrypted_value = Convert.ToBase64String(encrypted), key_id = key.GetProperty("key_id").GetString() }, ct);
+        return name;
+    }
+    public async Task DeletePassword(string requestId, CancellationToken ct)
+    {
+        if (Regex.IsMatch(requestId, "^[A-F0-9]{32}$"))
+            await Request(HttpMethod.Delete, $"{repo}/actions/secrets/RDP_PASSWORD_{requestId}", null, ct);
+    }
+    public Task<JsonElement> Dispatch(string branch, string requestId, int minutes, CancellationToken ct, string passwordSecret = "") =>
         Request(HttpMethod.Post, $"{repo}/actions/workflows/main.yml/dispatches",
-            new { @ref = branch, inputs = new { request_id = requestId, duration_minutes = minutes.ToString() } }, ct);
+            new { @ref = branch, inputs = new { request_id = requestId, duration_minutes = minutes.ToString(), password_secret = passwordSecret } }, ct);
 
     public async Task<long?> FindRun(string requestId, CancellationToken ct)
     {

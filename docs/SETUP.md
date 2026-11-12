@@ -10,11 +10,11 @@ Set up a repository you control once, then use **Get RDP** to start future sessi
 2. Open **your fork → Actions** and enable workflows. In **Settings → Actions → General**, allow Actions and `actions/upload-artifact@v4`. Check your GitHub runner quota/billing.
 3. Add these **repository secrets** under **your fork → Settings → Secrets and variables → Actions**. GitHub does **not** copy secrets when you fork:
    - `TAILSCALE_AUTH_KEY`: a valid **Auth Key**, not an API access token, from https://login.tailscale.com/admin/settings/keys. Use a reusable key for repeated launches; an ephemeral key is recommended for temporary runners. If device approval is required, pre-approve the key/devices. Configure any tags and ACLs/grants for your tailnet.
-   - `RDP_PASSWORD`: at least **14 characters**, including uppercase, lowercase, a digit, and a symbol. Keep it in your password manager; you will type it into Remote Desktop.
+   - RDP password is optional in launcher v1.3. Leave the field blank for `123456`, or enter your own (up to the Windows limit of 127 characters). No minimum length or complexity is imposed. Custom values are encrypted into a per-session GitHub secret by the app; they are never sent as workflow inputs. The app removes this temporary secret after connection info is ready. If you close the app early, resume it to clean up or remove `RDP_PASSWORD_<session-id>` in repository Settings.
 4. Install Tailscale on your Windows PC: https://tailscale.com/download/windows. Sign in to the **same tailnet** as the Auth Key, connect, and ensure your PC is online. ACLs/grants must allow your PC to access the runner on **TCP 3389**.
 5. Create a **fine-grained GitHub personal access token**: https://github.com/settings/personal-access-tokens/new.
    - Select the owner of your fork, then select **only your fork** under repository access.
-   - Repository permissions: **Actions: Read and write**, **Contents: Read-only**, **Secrets: Read-only**, **Administration: Read-only**. Metadata is automatic.
+   - Repository permissions: **Actions: Read and write**, **Contents: Read-only**, **Secrets: Read and write** (for custom RDP passwords), **Administration: Read-only**. Metadata is automatic.
    - Complete organization approval/SSO if applicable. Your GitHub account must have write access to the fork.
    - Administration read checks whether Actions is enabled; Secrets read checks secret names. The launcher does not require Contents write and does not push changes to GitHub.
 
@@ -24,7 +24,7 @@ Set up a repository you control once, then use **Get RDP** to start future sessi
 2. On first launch, the app asks for a GitHub token. It validates the token and saves it as **`github-token.dat` beside the EXE**, encrypted using Windows DPAPI for your Windows account. On later launches, it loads automatically. Use **Add / change token** or **Forget token** to replace/delete it. Expired/revoked tokens still need replacing.
 3. Paste **your repository URL**, e.g. `https://github.com/YOUR-USERNAME/RDP`. Repository names may differ; the app verifies the fork network through GitHub. The source repository requires write access; unrelated/copied repositories are rejected.
 4. Choose 10–300 minutes. Optionally click **Check setup**, or click **Get RDP**, which always checks first. The app remembers your fork and restores its last run; after reopening, it automatically checks a saved fork when a token is available.
-5. Wait for the IP, then click **Copy IP** or **Open Remote Desktop**. Sign in as `.\RDP` using your `RDP_PASSWORD` secret. Match any certificate prompt to the displayed session IP.
+5. Wait for the IP, then click **Copy IP** or **Open Remote Desktop**. Sign in as `.\RDP` using your selected password, or `123456` if left blank. Match any certificate prompt to the displayed session IP.
 6. Click **Stop workflow** when finished. Closing the app or clicking **Stop monitoring** does not stop GitHub Actions. Temporary runner data is lost when the session ends.
 
 To return to a session, reopen the app and click **Resume run**. You can also enter its Run ID from `https://github.com/OWNER/REPO/actions/runs/RUN_ID`. Run IDs and request IDs are kept separately per fork in `%LOCALAPPDATA%\RdpLauncher\session-v2.json`; this file contains no token or RDP password. To create another session after the old one ends, clear Run ID. If a request has an uncertain result, the app asks you to check Actions before discarding that request ID, preventing accidental duplicate launches.
